@@ -295,7 +295,7 @@ public class AM3 extends Activity implements OnClickListener{
 			break;
 		case R.id.btn_GetAlarmInfo:
 			if (am3Control != null) {
-				am3Control.checkAlarmClock(1);
+				am3Control.getAlarmClockDetail(1);
 			}else
 				Toast.makeText(this, "am3Control == null", Toast.LENGTH_LONG).show();
 			break;

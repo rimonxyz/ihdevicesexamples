@@ -315,9 +315,9 @@ public class AM4 extends Activity implements OnClickListener{
 			break;
 			
 		case R.id.btn_GetAlarmInfo:
-			if (am4Control != null) 
-				am4Control.checkAlarmClock(1);
-			else
+			if (am4Control != null) {
+				am4Control.getAlarmClockDetail(1);
+			} else
 				Toast.makeText(AM4.this, "am4Control == null", Toast.LENGTH_LONG).show();
 			break;
 			
