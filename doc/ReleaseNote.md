@@ -72,3 +72,10 @@ Description:
 	5.modify some bugs
 Release Date: 2016-5-05
 ```
+
+### 9. V2.2.5
+```
+Description: 
+	1.Optimize BG1Api interface
+Release Date: 2016-5-12
+```
