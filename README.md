@@ -15,7 +15,7 @@ iHealth Bp7
 iHealth Bp7s  
 iHealth Bp550BT  
 iHealth KD926  
-iHealth KD723
+iHealth KD723  
 iHealth Abi  
 iHealth Hs3  
 iHealth Hs4  
