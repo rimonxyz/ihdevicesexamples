@@ -173,14 +173,14 @@ public class Bp926 extends Activity implements OnClickListener{
 			
 		case R.id.btn_getOfflineNum:
 			if(bp926Control != null)
-				bp926Control.getOfflineNum();
+				bp926Control.getOfflineNum(1);
 			else
 				Toast.makeText(this, "bp926Control == null", Toast.LENGTH_LONG).show();
 			break;
 			
 		case R.id.btn_getOffineData:
 			if(bp926Control != null)
-				bp926Control.getOfflineData();
+				bp926Control.getOfflineData(1);
 			else
 				Toast.makeText(this, "bp926Control == null", Toast.LENGTH_LONG).show();
 			break;

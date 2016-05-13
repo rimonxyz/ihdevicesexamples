@@ -4,7 +4,7 @@ This document describes how to use the iHealth Device SDK to accomplish the majo
 
 ### Latest version
 
-2.2.5
+2.2.6
 
 ### Support iHealth Device for Android
 
@@ -15,6 +15,7 @@ iHealth Bp7
 iHealth Bp7s  
 iHealth Bp550BT  
 iHealth KD926  
+iHealth KD723
 iHealth Abi  
 iHealth Hs3  
 iHealth Hs4  
