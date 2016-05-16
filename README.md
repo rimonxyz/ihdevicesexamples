@@ -4,7 +4,7 @@ This document describes how to use the iHealth Device SDK to accomplish the majo
 
 ### Latest version
 
-2.2.6
+2.2.7
 
 ### Support iHealth Device for Android
 

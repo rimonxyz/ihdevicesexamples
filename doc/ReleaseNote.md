@@ -87,3 +87,10 @@ Description:
 	2.solve some bug
 Release Date: 2016-5-13
 ```
+
+### 11. V2.2.7
+```
+Description: 
+	1.solve up cloud bug
+Release Date: 2016-5-16
+```
