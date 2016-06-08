@@ -72,11 +72,9 @@ public class AM4 extends Activity implements OnClickListener{
 
 	private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {
 
-		@Override
-		public void onScanDevice(String mac, String deviceType) {}
 
 		@Override
-		public void onDeviceConnectionStateChange(String mac, String deviceType, int status) {}
+		public void onDeviceConnectionStateChange(String mac, String deviceType, int status, int errorID) {}
 
 		@Override
 		public void onDeviceNotify(String mac, String deviceType, String action, String message) {
@@ -259,10 +257,10 @@ public class AM4 extends Activity implements OnClickListener{
 		int id = arg0.getId();
 		switch (id) {
 		case R.id.btn_SetUserMessage:
-			if (am4Control != null) 
-				am4Control.setUserInfo(29, 177, 65, 1, 1, 10000, 1);
-			else
-				Toast.makeText(AM4.this, "am4Control == null", Toast.LENGTH_LONG).show();
+//			if (am4Control != null) 
+//				am4Control.setUserInfo(29, 177, 65, 1, 1, 10000, 1);
+//			else
+//				Toast.makeText(AM4.this, "am4Control == null", Toast.LENGTH_LONG).show();
 			break;
 			
 		case R.id.btn_SetUserID:

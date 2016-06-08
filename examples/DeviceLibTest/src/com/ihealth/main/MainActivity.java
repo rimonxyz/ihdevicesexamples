@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {
 
         @Override
-        public void onScanDevice(String mac, String deviceType) {
+        public void onScanDevice(String mac, String deviceType, int rssi) {
             Log.i(TAG, "onScanDevice - mac:" + mac + " - deviceType:" + deviceType);
             Bundle bundle = new Bundle();
             bundle.putString("mac", mac);
@@ -136,7 +136,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        public void onDeviceConnectionStateChange(String mac, String deviceType, int status) {
+        public void onDeviceConnectionStateChange(String mac, String deviceType, int status, int errorID) {
             Bundle bundle = new Bundle();
             bundle.putString("mac", mac);
             bundle.putString("type", deviceType);
@@ -186,7 +186,7 @@ public class MainActivity extends Activity implements OnClickListener {
     public void onClick(View arg0) {
         switch (arg0.getId()) {
             case R.id.btn_discorvery:
-                int type = iHealthDevicesManager.DISCOVERY_AM4;
+                int type = iHealthDevicesManager.DISCOVERY_HS4;
                 /*
                  * discovery iHealth devices, This method can specify only to search for the devices
                  * that you want to connect

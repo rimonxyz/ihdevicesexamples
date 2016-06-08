@@ -44,7 +44,7 @@ public class BG1 extends Activity {
         String userName = intent.getExtras().getString("userName");
 
         mBg1Control = Bg1Control.getInstance();
-        mBg1Control.init(BG1.this, userName);
+        mBg1Control.init(BG1.this, userName,0);
     }
 
     private void registerBroadcast(){

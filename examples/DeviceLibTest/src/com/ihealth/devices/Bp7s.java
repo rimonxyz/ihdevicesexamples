@@ -60,14 +60,8 @@ public class Bp7s extends Activity implements OnClickListener{
 	private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {
 
 		@Override
-		public void onScanDevice(String mac, String deviceType) {
-			Log.i(TAG, "mac: " + mac);
-			Log.i(TAG, "deviceType: " + deviceType);
-		}
-
-		@Override
 		public void onDeviceConnectionStateChange(String mac,
-				String deviceType, int status) {
+				String deviceType, int status, int errorID) {
 			Log.i(TAG, "mac: " + mac);
 			Log.i(TAG, "deviceType: " + deviceType);
 			Log.i(TAG, "status: " + status);

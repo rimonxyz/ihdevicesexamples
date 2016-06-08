@@ -72,11 +72,9 @@ public class AM3S extends Activity implements OnClickListener{
 
 	private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {
 
-		@Override
-		public void onScanDevice(String mac, String deviceType) {}
 
 		@Override
-		public void onDeviceConnectionStateChange(String mac, String deviceType, int status) {}
+		public void onDeviceConnectionStateChange(String mac, String deviceType, int status, int errorID) {}
 
 		@Override
 		public void onDeviceNotify(String mac, String deviceType, String action, String message) {
