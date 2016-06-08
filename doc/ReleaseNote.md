@@ -94,3 +94,16 @@ Description:
 	1.solve up cloud bug
 Release Date: 2016-5-16
 ```
+
+### 12. V2.2.8
+```
+Description: 
+	1.Fix PO3 HS4 connection bug
+	2.Add RSSI for Device with low energy
+	Before:
+	public void onScanDevice(String mac, String deviceType) {}
+	After:
+	public void onScanDevice(String mac, String deviceType, int rssi) {}
+	3.Other modify
+Release Date: 2016-5-16
+```
