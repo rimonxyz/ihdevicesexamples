@@ -105,5 +105,12 @@ Description:
 	After:
 	public void onScanDevice(String mac, String deviceType, int rssi) {}
 	3.Other modify
-Release Date: 2016-5-16
+Release Date: 2016-6-8
+```
+
+### 13. V2.2.9
+```
+Description: 
+	1.Fix register bug
+Release Date: 2016-6-20
 ```
