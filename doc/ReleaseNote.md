@@ -114,3 +114,12 @@ Description:
 	1.Fix register bug
 Release Date: 2016-6-20
 ```
+
+### 13. V2.3.0
+```
+Description: 
+	1.Support OneCode
+	2.Support Continua BP
+	3.Support BTM
+Release Date: 2016-6-28
+```

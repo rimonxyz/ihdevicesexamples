@@ -4,7 +4,7 @@ This document describes how to use the iHealth Device SDK to accomplish the majo
 
 ### Latest version
 
-2.2.9
+2.3.0
 
 ### Support iHealth Device for Android
 
@@ -24,6 +24,7 @@ iHealth Hs5
 iHealth Hs6  
 iHealth Am3  
 iHealth Am3s  
+iHealth Am4
 iHealth Po3  
 iHealth BG1(AG-680)  
 iHealth BG5 
@@ -35,14 +36,16 @@ iHealth BG5
 iHealth Device SDK communicate with iHealth Device by USB, Bluetooth, BluetoothLe, Wifi or Audio.  
 **USB:** iHealth Bp3m  
 **Bluetooth:** iHealth Bp5, iHealth Bp7, iHealth Bp7s, iHealth Abi, iHealth Hs3, iHealth Hs4, iHealth BG5  
-**BluetoothLe:** iHealth Bp3l, iHealth Bp550BT, iHealth KD926, iHealth Am3, iHealth Am3s, iHealth Po3, iHealth Hs4s  
+**BluetoothLe:** iHealth Bp3l, iHealth Bp550BT, iHealth KD926, iHealth KD723, iHealth Am3, iHealth Am3s, iHealth Po3, iHealth Hs4s  
 **Audio:** iHealth BG1(AG-680)  
 **Wifi:** iHealth Hs5, iHealth Hs6
 
 
 ### Configure
 
-Need to introduce the development kit iHealthLibrary.jar. Which are ABI BP3, BP5, BP7, BG1, BG5, BP, HS3, Android4.0 and HS5 support AM3 and its version; AM3S, HS4, and PO3 support Android4.3 and the above version and Android4.4 Samsung brand mobile phone.
+Need to introduce the development kit iHealthLibrary.jar.  
+Support phone os 4.0+: ABI, BP3, BP5, BP7, BP7S, BG1, BG5, BP, HS3, HS5, HS4S, HS6  
+Support phone os 4.4+: AM3, AM3S, AM4, HS4, PO3, BP3L, KD926, KD723, Bp550BT,
 
 Specific configuration as shown below:
 
