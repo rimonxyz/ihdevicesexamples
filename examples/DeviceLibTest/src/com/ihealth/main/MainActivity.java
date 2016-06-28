@@ -186,14 +186,15 @@ public class MainActivity extends Activity implements OnClickListener {
     public void onClick(View arg0) {
         switch (arg0.getId()) {
             case R.id.btn_discorvery:
-                int type = iHealthDevicesManager.DISCOVERY_HS4;
                 /*
                  * discovery iHealth devices, This method can specify only to search for the devices
                  * that you want to connect
                  */
                 list_ScanDevices.clear();
                 updateViewForScan();
-                iHealthDevicesManager.getInstance().startDiscovery(type);
+                // | iHealthDevicesManager.DISCOVERY_HS4S  | iHealthDevicesManager.DISCOVERY_BP5 | iHealthDevicesManager.DISCOVERY_BP7 | iHealthDevicesManager.DISCOVERY_BP7S
+                //iHealthDevicesManager.DISCOVERY_HS4 | iHealthDevicesManager.DISCOVERY_BP3L  | iHealthDevicesManager.DISCOVERY_PO3 | iHealthDevicesManager.DISCOVERY_AM3S | iHealthDevicesManager.DISCOVERY_AM4
+                iHealthDevicesManager.getInstance().startDiscovery(iHealthDevicesManager.DISCOVERY_HS4S  | iHealthDevicesManager.DISCOVERY_BP5 | iHealthDevicesManager.DISCOVERY_BP7 | iHealthDevicesManager.DISCOVERY_BP7S);
                 tv_discovery.setText("discovering...");
                 break;
 

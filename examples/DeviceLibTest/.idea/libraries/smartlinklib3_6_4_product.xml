@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="smartlinklib3.6.4_product">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/smartlinklib3.6.4_product.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/pl2303driver.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/d2xx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/btle.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/android-support-v4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
