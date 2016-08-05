@@ -1,4 +1,4 @@
-# iHealth Device Developer Documnentation
+# iHealth Device Developer Documentation
 
 This document describes how to use the iHealth Device SDK to accomplish the major operation: Connection Device, Online Measurement, Offline Measurement and iHealth Device Management.
 
@@ -49,7 +49,7 @@ Support phone os 4.4+: AM3, AM3S, AM4, HS4, PO3, BP3L, KD926, KD723, Bp550BT,
 
 Specific configuration as shown below:
 
-> Neet to add ACCESS_COARSE_LOCATION premisson in Android 6.0。
+> Need to add ACCESS_COARSE_LOCATION permission in Android 6.0。
 
 ![box-model](https://github.com/iHealthDeviceLabs/iHealthDeviceLabs-Android/blob/master/public/user_permission.png?raw=true)
 
