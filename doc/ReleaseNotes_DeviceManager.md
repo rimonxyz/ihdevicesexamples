@@ -1,6 +1,6 @@
 # Release notes for iHealth Device Manager
 
-## Introducation
+## Introduction
 
 These release notes for iHealth Device Manager provide an overview of the release and document.
 

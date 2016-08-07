@@ -1,6 +1,6 @@
 # Release notes for AM Device Manager
 
-## Introducation
+## Introduction
 
 The release notes for AM Device Manager provide an overview of the release and document.
 

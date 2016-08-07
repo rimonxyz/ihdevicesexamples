@@ -1,6 +1,6 @@
 # Release notes for BP Device Manager
 
-## Introducation
+## Introduction
 
 The release notes for BP Device Manager provide an overview of the release and document.
 
