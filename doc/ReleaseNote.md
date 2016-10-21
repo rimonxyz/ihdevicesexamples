@@ -123,3 +123,18 @@ Description:
 	3.Support BTM
 Release Date: 2016-6-28
 ```
+
+### 13. V2.3.1
+```
+Description: 
+	1. Support update the firmware of device (AM3 AM3S AM4 HS4 HS4S)
+	2. Support FDTH
+	3. Optimize the api documents
+	4. Optimize the connection for BG1
+	5. Optimize the connection for BLE device
+	6. Check the paraments for all the api
+	7. Support connect without discovery(BT BLE device)
+	8. Add log version for debug
+	9. Fix bugs
+Release Date: 2016-10-21
+```

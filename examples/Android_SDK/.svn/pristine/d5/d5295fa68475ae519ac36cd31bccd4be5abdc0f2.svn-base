@@ -1,0 +1,127 @@
+package com.ihealth.communication.control;
+
+import android.content.Context;
+
+import com.ihealth.communication.base.comm.BaseComm;
+import com.ihealth.communication.base.comm.BaseCommCallback;
+import com.ihealth.communication.ins.A1InsSetforABPM;
+import com.ihealth.communication.ins.InsCallback;
+import com.ihealth.communication.manager.iHealthDevicesManager;
+
+/**
+ * Public API for the ABPM
+ * <p> The class provides methods to control ABPM device.
+ * You need to call the device method, and then call the connection method
+ * <p> If you want to connect a ABPM device, you need to call{@link iHealthDevicesManager#startDiscovery} to discovery a new ABPM device,
+ * and then call{@link iHealthDevicesManager#connectDevice}to connect ABPM device.
+ */
+public class ABPMControl implements DeviceControl{
+
+	private static final String TAG = "ABPMControl";
+
+	private Context mContext;
+	private A1InsSetforABPM a1InsSet;
+	private BaseComm mComm;
+	private String mAddress;
+
+	/**
+	 *
+	 * @param context
+	 * @param com
+	 * @param userName
+	 * @param mac
+	 * @param name
+	 * @param insCallback
+	 * @param mBaseCommCallback
+	 * @hide
+	 */
+	public ABPMControl(Context context, BaseComm com, String userName, String mac, String name, InsCallback insCallback, BaseCommCallback mBaseCommCallback){
+		this.mComm = com;
+		this.mContext = context;
+		this.mAddress = mac;
+		a1InsSet = new A1InsSetforABPM(context, com, userName, mac, name, insCallback, mBaseCommCallback);
+	}
+
+	/**
+	 * Get the ABPM information
+	 */
+	public String getIdps(){
+		return iHealthDevicesManager.getInstance().getDevicesIDPS(mAddress);
+	}
+
+	/**
+	 * Get the ABPM battery
+	 */
+	public void getBattery(){
+		a1InsSet.getBatteryLevel();
+	}
+
+
+	/**
+	 * Get the number of historical data in the ABPM,select memory size.
+	 */
+	public void getOfflineNum(){
+		a1InsSet.getOfflineData = false;
+		a1InsSet.getOffLineDataNum();
+	}
+
+	
+	/**
+	 * Get the value of historical data in the ABPM,select memory size.
+	 */
+	public void getOfflineData(){
+		a1InsSet.getOfflineData = true;
+		a1InsSet.getOffLineDataNum();
+	}
+
+	
+	/**
+     * sync real time:Synchronize the system time to ABPM device.
+     */
+    public void getFunctionInfo() {
+    	a1InsSet.getFunctionInfo();
+    }
+
+	/**
+	 * Get automatic cycle measurement setup.
+	 */
+	public void getMeasureTime () {
+		a1InsSet.getMeasureTime();
+	}
+
+	/**
+	 * Set automatic cycle measurement setup.
+	 * @param hour Measure time length, unit is hour.
+	 * @param necessaryPara morning parameter and night parameter.
+	 * @param unnecePara noon rest parameter and noon get up parameter.
+	 */
+	public void setMeasureTime (int hour, int[] necessaryPara, int[] unnecePara) {
+		a1InsSet.setMeasureTime(hour, necessaryPara, unnecePara);
+	}
+
+	/**
+	 * @hide
+	 */
+	@Override
+	public void init() {
+		a1InsSet.identify();
+	}
+
+	/**
+	 * Disconnect the ABPM
+	 */
+	@Override
+	public void disconnect() {
+		mComm.disconnect(mAddress);
+	}
+
+	@Override
+	public void destroy() {
+		if(a1InsSet != null)
+			a1InsSet.destroy();
+		a1InsSet = null;
+		mContext = null;
+		mComm = null;
+	}
+
+}

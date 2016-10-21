@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# The script for iHealth SDK Output
+
+set -e
+
+SDK_ROOT_DIR="/Users/apple/SVN/iHealthAndroidSDK/branches"
+PROGUARD_DIR="/Users/apple/Desktop/adt-bundle-mac-x86_64-20140702/sdk/tools/proguard/lib/proguard.jar"
+SDK_OUTPUT_DIR="output"
+
+cd $SDK_ROOT_DIR
+
+if [ -e "$SDK_OUTPUT_DIR" ]; then
+	rm -rf $SDK_OUTPUT_DIR
+fi
+
+mkdir $SDK_OUTPUT_DIR
+cd $SDK_OUTPUT_DIR
+mkdir jar
+
+echo "/*****************************************/"
+echo "/**                                     **/"
+echo "/**     create a android project        **/"
+echo "/**                                     **/"
+echo "/*****************************************/"
+
+cp -Rp $SDK_ROOT_DIR/iHealthSDKLib $SDK_ROOT_DIR/output/
+rm -rfv $SDK_ROOT_DIR/output/iHealthSDKLib/ihealthdevicesdk/
+rm -rfv $SDK_ROOT_DIR/output/iHealthSDKLib/output/
+rm -rfv $SDK_ROOT_DIR/output/iHealthSDKLib/tools/
+
+echo "/*****************************************/"
+echo "/**                                     **/"
+echo "/**     generate and proguard jar       **/"
+echo "/**                                     **/"
+echo "/*****************************************/"
+
+cd ../iHealthSDKLib/tools
+command ant
+java -jar $PROGUARD_DIR @$SDK_ROOT_DIR/iHealthSDKLib/tools/ihealthlib.pro
+cp $SDK_ROOT_DIR/iHealthSDKLib/ihealthdevicesdk/libs/btle.jar  $SDK_ROOT_DIR/output/iHealthSDKLib/app/libs/
+cp $SDK_ROOT_DIR/iHealthSDKLib/ihealthdevicesdk/libs/d2xx.jar  $SDK_ROOT_DIR/output/iHealthSDKLib/app/libs/
+cp $SDK_ROOT_DIR/iHealthSDKLib/ihealthdevicesdk/libs/pl2303driver.jar  $SDK_ROOT_DIR/output/iHealthSDKLib/app/libs/
+cp $SDK_ROOT_DIR/iHealthSDKLib/ihealthdevicesdk/libs/smartlinklib3.6.4_product.jar  $SDK_ROOT_DIR/output/iHealthSDKLib/app/libs/
+cp $SDK_ROOT_DIR/output/jar/iHealthDeviceLib.jar  $SDK_ROOT_DIR/output/iHealthSDKLib/app/libs/
+

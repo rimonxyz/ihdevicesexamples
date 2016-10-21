@@ -1,0 +1,688 @@
+/**
+ * @title
+ * @Description
+ * @author
+ * @date 2015年5月26日 下午1:36:02 
+ * @version V1.0  
+ */
+
+package com.ihealth.communication.ins;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.ihealth.communication.base.comm.BaseComm;
+import com.ihealth.communication.base.comm.BaseCommCallback;
+import com.ihealth.communication.base.comm.NewDataCallback;
+import com.ihealth.communication.base.protocol.BaseCommProtocol;
+import com.ihealth.communication.base.protocol.BleCommProtocol;
+import com.ihealth.communication.cloud.tools.AppsDeviceParameters;
+import com.ihealth.communication.control.BpProfile;
+import com.ihealth.communication.manager.iHealthDevicesManager;
+import com.ihealth.communication.utils.ByteBufferUtil;
+import com.ihealth.communication.utils.MD5;
+import com.ihealth.communication.utils.PublicMethod;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+/**
+ * Private API for Bp series devices that contain ABPM
+ * 查功能信息、查电量、上传记忆条数、上传记忆数据、查测量时间段、设置测量时间段
+ * @hide
+ */
+public class A1InsSetforABPM extends IdentifyIns implements NewDataCallback {
+    private static final String TAG = "A1InsSetforABPM";
+    private static final byte deviceType = (byte) 0xa1;
+    private Context mContext;
+    private BaseCommProtocol btcm;
+    private String mAddress;
+    private String mType;
+    private String hVer;
+    private String fVer;
+    private String manufacture;
+    private String modeNumber;
+    private String protocolString;
+    public boolean getOfflineData = false;
+
+    private BaseComm mBaseComm;
+	private String mUserName;
+	/* Product protocol callback */
+	private InsCallback mInsCallback;
+
+	/* Communication callback */
+	private BaseCommCallback mBaseCommCallback;
+	private A1DBtools mA1DBtools;
+
+	/**
+	 * a constructor for A1InsSetforABPM.
+	 * @param context
+	 * @param com
+	 * @param userName
+	 * @param mac
+	 * @param type
+	 * @param insCallback
+	 * @param mBaseCommCallback
+	 * @hide
+	 */
+    public A1InsSetforABPM(Context context, BaseComm com, String userName, String mac, String type, InsCallback insCallback, BaseCommCallback mBaseCommCallback) {
+        this.mContext = context;
+        this.mAddress = mac;
+        this.mType = type;
+
+        this.btcm = new BleCommProtocol(context, com, mac, deviceType, this);
+        // Log.d(TAG, "Bp7sInsSet");
+        offlineList = new ArrayList<String>();
+        
+        this.mBaseComm = com;
+		this.mUserName = userName;
+		this.mInsCallback = insCallback;
+		this.mBaseCommCallback = mBaseCommCallback;	
+		this.mA1DBtools = new A1DBtools();
+        setInsSetCallbak(insCallback, mac, type, mBaseComm);
+    }
+
+    /**
+	 * Authentication
+	 * @hide
+	 */
+    public void identify() {
+        startTimeout(0xfa, AppsDeviceParameters.Delay_Medium, 0xfb, 0xfd, 0xfe);
+        btcm.packageData(mAddress, identify(deviceType));
+    }
+
+    /**
+	 * Get battery of the current Bp device.
+	 * @hide
+	 */
+    public void getBatteryLevel() {
+
+        byte[] returnCommand = new byte[5];
+        byte commandID = (byte) 0x20;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) 0x00;
+        returnCommand[3] = (byte) 0x00;
+        returnCommand[4] = (byte) 0x00;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    /**
+     * 下位机功能信息:产品类型、命令ID、年月日时分秒
+     */
+    public void getFunctionInfo() {
+        Calendar calenda = Calendar.getInstance();
+        calenda.setTimeZone(TimeZone.getDefault());
+        int year = calenda.get(Calendar.YEAR) - 2000;
+        int month = calenda.get(Calendar.MONTH) + 1;
+        int day = calenda.get(Calendar.DAY_OF_MONTH);
+        int hour = calenda.get(Calendar.HOUR_OF_DAY);
+        int min = calenda.get(Calendar.MINUTE);
+        int sed = calenda.get(Calendar.SECOND);
+
+        byte[] returnCommand = new byte[8];
+        byte commandID = (byte) 0x21;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) year;
+        returnCommand[3] = (byte) month;
+        returnCommand[4] = (byte) day;
+        returnCommand[5] = (byte) hour;
+        returnCommand[6] = (byte) min;
+        returnCommand[7] = (byte) sed;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    /**
+     * 查询记忆条数
+     * 单组机型默认记忆组别为 1
+     */
+    public void getOffLineDataNum() {
+        byte[] returnCommand = new byte[5];
+        byte commandID = (byte) 0x40;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) this.Memory_Size;
+        returnCommand[3] = (byte) 0x00;
+        returnCommand[4] = (byte) 0x00;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    private int Memory_Size = 1;
+    public void setMemory_Size(int memory_Size) {
+        Memory_Size = memory_Size;
+    }
+
+    private void getOffLineData() {
+        byte[] returnCommand = new byte[5];
+        byte commandID = (byte) 0x41;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) this.Memory_Size;
+        returnCommand[3] = (byte) 0x00;
+        returnCommand[4] = (byte) 0x00;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+
+    private void allPkgOk(byte commandID) {
+        byte[] returnCommand = new byte[2];
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    /**
+     * 设置测量时间段
+     * @param hour
+     * @param arg1
+     * @param arg2
+     */
+    public void setMeasureTime (int hour,int[] arg1, int[] arg2) {
+        byte[] returnCommand = new byte[15];
+        byte commandID = (byte) 0x27;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) hour;
+
+        if (arg1.length == 6) {
+            returnCommand[3] = (byte) arg1[0];
+            returnCommand[4] = (byte) arg1[1];
+            returnCommand[5] = (byte) arg1[2];
+            returnCommand[6] = (byte) arg1[3];
+            returnCommand[7] = (byte) arg1[4];
+            returnCommand[8] = (byte) arg1[5];
+        } else {
+            returnCommand[3] = (byte) 0xff;
+            returnCommand[4] = (byte) 0xff;
+            returnCommand[5] = (byte) 0xff;
+            returnCommand[6] = (byte) 0xff;
+            returnCommand[7] = (byte) 0xff;
+            returnCommand[8] = (byte) 0xff;
+        }
+
+        if (arg2.length == 6) {
+            returnCommand[9] = (byte) arg2[0];
+            returnCommand[10] = (byte) arg2[1];
+            returnCommand[11] = (byte) arg2[2];
+            returnCommand[12] = (byte) arg2[3];
+            returnCommand[13] = (byte) arg2[4];
+            returnCommand[14] = (byte) arg2[5];
+        } else {
+            returnCommand[9] = (byte) 0xff;
+            returnCommand[10] = (byte) 0xff;
+            returnCommand[11] = (byte) 0xff;
+            returnCommand[12] = (byte) 0xff;
+            returnCommand[13] = (byte) 0xff;
+            returnCommand[14] = (byte) 0xff;
+        }
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    /**
+     * 查询测量时间段
+     */
+    public void getMeasureTime () {
+        byte[] returnCommand = new byte[5];
+        byte commandID = (byte) 0x28;
+        returnCommand[0] = deviceType;
+        returnCommand[1] = commandID;
+        returnCommand[2] = (byte) 0x00;
+        returnCommand[3] = (byte) 0x00;
+        returnCommand[4] = (byte) 0x00;
+        btcm.packageData(mAddress, returnCommand);
+    }
+
+    private byte[] activitys;
+
+    @Override
+    public void haveNewData(int what, int stateId, byte[] returnData) {
+        if (AppsDeviceParameters.isLog)
+            Log.i(TAG, "what:" + what);
+        stopTimeout(what);
+        JSONObject jsonObject = new JSONObject();
+        switch (what) {
+            case 0xfb:
+                byte[] req = deciphering(returnData, mType, deviceType);
+                startTimeout(0xfc, AppsDeviceParameters.Delay_Medium, 0xfd, 0xfe);
+                btcm.packageData(mAddress, req);
+                break;
+            case 0xfd:
+            	Log.i(TAG, "connection and authentication success address:" + mAddress + " - type:" + mType);
+    			this.mBaseCommCallback.onConnectionStateChange(mAddress, mType, iHealthDevicesManager.DEVICE_STATE_CONNECTED, 0, null);
+                break;
+            case 0xfe:
+                Log.i(TAG, "认证失败");
+                mBaseComm.disconnect();
+                break;
+            case 0x20:  //获取电量
+            	int batteryLevel = returnData[0]&0xff;											
+    			if (!((batteryLevel>0) && (batteryLevel <= 100))) {
+    				/* if the battery beyond 100, set battery to 100. */
+    				batteryLevel = 100; 
+    			}
+    			try {
+    				jsonObject.put(BpProfile.BATTERY_BP, batteryLevel);
+    				mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_BATTERY_BP, jsonObject.toString());
+    			} catch (JSONException e) {
+    				e.printStackTrace();
+    			}
+
+                break;
+            case 0x21:
+                //记忆组别
+                if (returnData != null) {
+                    //
+                    boolean upAirMeasureFlg;    //上气、下气测量标志位 bit0
+                    boolean armMeasureFlg;  //腕式、臂式 bit1
+                    boolean haveAngleSensorFlg; //是否带角度 bit2
+                    boolean havePowerOffFunc;   //是否带关机功能 bit3
+                    boolean haveOfflineFlg; //是否带离线测量功能 bit4
+                    boolean allowDeleteOffline; //是否允许删除记忆数据 bit5
+                    boolean haveHSDFlg; //是否有HSD bit6
+                    boolean automaticCycleMeasure;  //自动循环测量 还是单次测量 bit7
+
+
+                    //bit0
+                    if ((returnData[1] & 0x01) == 1) {
+                        upAirMeasureFlg = true; //上气
+                    } else {
+                        upAirMeasureFlg = false; //下气
+                    }
+                    //bit1
+                    if ((returnData[1] & 0x02) == 1) {
+                        armMeasureFlg = true;   //臂式
+                    } else {
+                        armMeasureFlg = true;   //臂式
+                    }
+                    //bit2
+                    if ((returnData[1] & 0x04) == 1) {
+                        haveAngleSensorFlg = true;  //带角度测量
+                    } else {
+                        haveAngleSensorFlg = false;
+                    }
+                    //bit3
+                    if ((returnData[1] & 0x08) == 1) {
+                        havePowerOffFunc = true;
+                    } else {
+                        havePowerOffFunc = false;
+                    }
+                    //bit4
+                    if ((returnData[1] & 0x10) == 1) {
+                        haveOfflineFlg = true;  //带离线测量功能
+                    } else {
+                        haveOfflineFlg = false; //不带
+                    }
+                    //bit5
+                    if ((returnData[1] & 0x20) == 1) {
+                        allowDeleteOffline = true;
+                    } else {
+                        allowDeleteOffline = false;
+                    }
+                    //bit6
+                    if ((returnData[1] & 0x40) == 1) {
+                        haveHSDFlg = true;  //有HSD
+                    } else {
+                        haveHSDFlg = false; //没有
+                    }
+                    //bit7
+                    if ((returnData[1] & 0x80) == 1) {
+                        automaticCycleMeasure = true;
+                    } else {
+                        automaticCycleMeasure = false;
+                    }
+
+
+                    if (AppsDeviceParameters.isLog)
+                        Log.i(TAG, "upAirMeasureFlg = "+upAirMeasureFlg+" armMeasureFlg = "+armMeasureFlg+" haveAngleSensorFlg = "+haveAngleSensorFlg+
+                        " haveOfflineFlg = "+haveOfflineFlg+" haveHSDFlg = "+haveHSDFlg);
+                    //记忆组别
+                    int memorySize = returnData[2] & 0xff;
+                    //组最大记忆容量
+                    int maxMemoryCapacity = returnData[3] & 0xff;
+
+                    //
+                    boolean haveAutomaticBackConnectMea;    //是否有自动回连设置 bit0
+                    boolean automaticBackConnectSwitch;     //自动回连开关 bit1
+                    boolean haveOfflineMeasure;             //有无离线测量设置 bit2
+                    boolean offlineMeasureSwitch;           //离线测量开关 bit3
+                    boolean haveShowUnitMeasure;            //有无显示单位设置 bit4
+                    int showUnit;                           //显示单位 bit5
+
+                    //bit0
+                    if ((returnData[4] & 0x01) == 1) {
+                        haveAutomaticBackConnectMea = true;
+                    } else {
+                        haveAutomaticBackConnectMea = false;
+                    }
+                    //bit1
+                    if ((returnData[4] & 0x02) == 1) {
+                        automaticBackConnectSwitch = true;
+                    } else {
+                        automaticBackConnectSwitch = false;
+                    }
+                    //bit2
+                    if ((returnData[4] & 0x04) == 1) {
+                        haveOfflineMeasure = true;
+                    } else {
+                        haveOfflineMeasure = false;
+                    }
+                    //bit3
+                    if ((returnData[4] & 0x08) == 1) {
+                        offlineMeasureSwitch = true;
+                    } else {
+                        offlineMeasureSwitch = false;
+                    }
+                    //bit4
+                    if ((returnData[4] & 0x10) == 1) {
+                        haveShowUnitMeasure = true;
+                    } else {
+                        haveShowUnitMeasure = false;
+                    }
+                    //bit5
+                    showUnit = returnData[4] & 0x20;    //1为kPa,0为mmHg
+
+                    boolean isABIDevice;    //是否为ABI功能机型 bit0
+                    int upLimb;         //上肢机型或下肢机型 bit1
+                    boolean limbSimultMeasureDev;   //是否为左右肢同时测量机型 bit2
+                    int limbDev;            //左肢机型或右肢机型 bit3
+
+                    //bit0
+                    if ((returnData[5] & 0x01) == 1) {
+                        isABIDevice = true;
+                    } else {
+                        isABIDevice = false;
+                    }
+                    //bit1
+                    upLimb = returnData[5] & 0x02;  //1是下肢机器，0是上肢机器
+                    //bit2
+                    if ((returnData[5] & 0x04) == 1) {
+                        limbSimultMeasureDev = true;
+                    } else {
+                        limbSimultMeasureDev = false;
+                    }
+                    //bit3
+                    limbDev = returnData[5] & 0x08; //1是右肢机器，0是左肢机器
+
+                    try {
+                        jsonObject.put(BpProfile.FUNCTION_IS_UPAIR_MEASURE, upAirMeasureFlg);
+                        jsonObject.put(BpProfile.FUNCTION_IS_ARM_MEASURE, armMeasureFlg);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_ANGLE_SENSOR, haveAngleSensorFlg);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_OFFLINE, haveOfflineFlg);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_HSD, haveHSDFlg);
+                        jsonObject.put(BpProfile.MEMORY_GROUP_BP, memorySize);
+                        //添加
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_POWEROFF, havePowerOffFunc);
+                        jsonObject.put(BpProfile.FUNCTION_ALLOW_DELETE_OFFLINEDATA, allowDeleteOffline);
+                        jsonObject.put(BpProfile.FUNCTION_IS_AUTOCYCLE_MEASURE, automaticCycleMeasure);
+                        jsonObject.put(BpProfile.FUNCTION_MAX_MEMORY_CAPACITY, maxMemoryCapacity);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_AUTO_BACKCONNECT, haveAutomaticBackConnectMea);
+                        jsonObject.put(BpProfile.FUNCTION_AUTO_BACKCONNECT_SWITCH, automaticBackConnectSwitch);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_OFFLINE_SETTING, haveOfflineMeasure);
+                        jsonObject.put(BpProfile.FUNCTION_OFFLINE_SWITCH, offlineMeasureSwitch);
+                        jsonObject.put(BpProfile.FUNCTION_HAVE_SHOW_UNIT_SETTING, haveShowUnitMeasure);
+                        jsonObject.put(BpProfile.FUNCTION_SHOW_UNIT, showUnit);
+                        jsonObject.put(BpProfile.FUNCTION_IS_ABI_DEVICE, isABIDevice);
+                        jsonObject.put(BpProfile.FUNCTION_UP_LOW_LIMB, upLimb);
+                        jsonObject.put(BpProfile.FUNCTION_IS_SIMULTANEOUS_MEASURE, limbSimultMeasureDev);
+                        jsonObject.put(BpProfile.FUNCTION_LEFT_RIGHT_LIMB, limbDev);
+
+                        mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_FUNCTION_INFORMATION_BP, jsonObject.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                break;
+
+            case 0x27:
+                if (returnData != null) {
+                    int measureTimes = returnData[2] & 0xff;    //剩余电量可持续测量次数
+                    try {
+                        jsonObject.put(BpProfile.CYCLE_MEASURE_TIMES_BP, measureTimes);
+                        mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_SET_CYCLE_MEASURE_SUCCESS, jsonObject.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case 0x28:
+                if (returnData != null) {
+                    int measureTime = returnData[0] & 0xff; //用户设定测量时长 单位 h
+
+                    int morningHour = returnData[1] & 0xff;
+                    int morningMin = returnData[2] & 0xff;
+                    int morningInterval = returnData[3] & 0xff;
+
+                    int nightHour = returnData[4] & 0xff;
+                    int nightMin = returnData[5] & 0xff;
+                    int nightInterval = returnData[6] & 0xff;
+
+                    int noonRestHour = returnData[7] & 0xff;
+                    int noonRestMin = returnData[8] & 0xff;
+                    int noonRestInterval = returnData[9] & 0xff;
+
+                    int noonGetupHour = returnData[10] & 0xff;
+                    int noonGetupMin = returnData[11] & 0xff;
+                    int noonGetupInterval = returnData[12] & 0xff;
+
+                    JSONArray morningSetting = new JSONArray();
+                    morningSetting.put(morningHour);
+                    morningSetting.put(morningMin);
+                    morningSetting.put(morningInterval);
+
+                    JSONArray nightSetting = new JSONArray();
+                    nightSetting.put(nightHour);
+                    nightSetting.put(nightMin);
+                    nightSetting.put(nightInterval);
+
+                    JSONArray noonRestSetting = new JSONArray();
+                    noonRestSetting.put(noonRestHour);
+                    noonRestSetting.put(noonRestMin);
+                    noonRestSetting.put(noonRestInterval);
+
+                    JSONArray noonGetupSetting = new JSONArray();
+                    noonGetupSetting.put(noonGetupHour);
+                    noonGetupSetting.put(noonGetupMin);
+                    noonGetupSetting.put(noonGetupInterval);
+
+                    try {
+                        jsonObject.put(BpProfile.GET_MEASURE_TIME_BP, measureTime);
+                        jsonObject.put(BpProfile.GET_FIRST_TIME_BP, morningSetting);
+                        jsonObject.put(BpProfile.GET_SECOND_TIME_BP, nightSetting);
+                        jsonObject.put(BpProfile.GET_THIRD_TIME_BP, noonRestSetting);
+                        jsonObject.put(BpProfile.GET_FORTH_TIME_BP, noonGetupSetting);
+
+                        mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_GET_CYCLE_MEASURE, jsonObject.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+
+            case 0x40:
+                int num = returnData[1]&0xff;
+                if (num == 0&&getOfflineData) {			//获取数据
+                    mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_HISTORICAL_DATA_BP, new JSONObject().toString());
+				}else if (num != 0&&getOfflineData) {	//获取数据
+					getOffLineData();
+				}else if (!getOfflineData) {			//获取数量
+					try {
+	    				jsonObject.put(BpProfile.HISTORICAL_NUM_BP, num);
+	    				mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_HISTORICAL_NUM_BP, jsonObject.toString());
+	    			} catch (JSONException e) {
+	    				e.printStackTrace();
+	    			}
+				}
+                break;
+            case 0x41:
+                // cancelRepeat();
+                activitys = ByteBufferUtil.BufferMerger(activitys,
+                        ByteBufferUtil.bytesCutt(2, returnData.length - 1, returnData));
+                if (returnData[1] == 0) {   //数据分包顺序号
+                    if (activitys != null) {
+                        convertOffline(activitys);
+                        activitys = null;
+                    }
+                } else {
+                    getOffLineData();
+                }
+                break;
+
+            case 0x38:
+            	int errorNum = (int)(returnData[0] & 0xff);
+    			try {
+    				jsonObject.put(iHealthDevicesManager.IHEALTH_DEVICE_TYPE, mType);
+    				jsonObject.put(BpProfile.ERROR_NUM_BP, errorNum);
+    				mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_ERROR_BP, jsonObject.toString());
+    			} catch (JSONException e) {
+    				e.printStackTrace();
+    			}
+                break;
+            case 0xff:
+                identify();
+                break;
+            default:
+                Log.i(TAG, "没有这条指令");
+                break;
+        }
+    }
+
+    private void convertOffline(byte[] datas) {
+    	JSONObject eachData;
+    	JSONObject jsonObject = new JSONObject();
+    	JSONArray eachArray = new JSONArray();
+    	
+        offlineList.clear();
+        int num = (datas.length) / 9;
+        int index = 0;
+        for (int i = 0; i < num; i++) {
+            String str = "";
+            //AHR
+            int temp = 0;
+            //HSD
+            int temp2 = 0;
+            //角度信息 协议里没有
+            int angInfo = 0;
+            for (int j = 0; j < 9; j++) {
+                if (j == 0) {
+                    if (datas[j + index] < 0) {
+                        temp = 1;
+                    } else {
+                        temp = 0;
+                    }
+                    str += (datas[j + index] & 0x7f) + ","; //年
+                } else if (j == 1) {
+                    if (datas[j + index] < 0) {
+                        temp2 = 1;
+                    } else {
+                        temp2 = 0;
+                    }
+                    str += (datas[j + index] & 0x7f) + ","; //月
+                } else if (j == 2) {                        //日
+                    angInfo = angInfo |((datas[j + index]&0xE0)>>5);
+                    str += (datas[j + index] & 0xff) + ",";
+                } else if (j == 3) {                        //时
+                    angInfo = angInfo |((datas[j + index]&0xE0)>>2);
+                    str += (datas[j + index] & 0xff) + ",";
+                } else if (j == 4) {                        //分
+                    angInfo = angInfo |((datas[j + index]&0xC0));
+                    str += (datas[j + index] & 0xff) + ",";
+                } else {
+                    str += (datas[j + index] & 0xff) + ",";
+                }
+            }
+            str += temp;
+            str += ","+temp2+",";
+            str += angInfo;
+            index += 9;
+            offlineList.add(str);
+        }
+         for (int i = 0; i < offlineList.size(); i++) {
+             // byte[] datas = ByteBufferUtil.hexStringToByte(result.get(i));
+             // int Sys = datas[5] & 0xff + datas[6] & 0xff;
+             eachData = new JSONObject();
+
+             int SYS = Integer.parseInt(offlineList.get(i).split(",")[5])
+             + Integer.parseInt(offlineList.get(i).split(",")[6]);
+             int DIA = Integer.parseInt(offlineList.get(i).split(",")[6]);
+             int Pulse = Integer.parseInt(offlineList.get(i).split(",")[7]);
+             int activityAmount = Integer.parseInt(offlineList.get(i).split(",")[8]);   //活动量
+             int IsArr = Integer.parseInt(offlineList.get(i).split(",")[9]);// 0齐，1不齐 AHR
+             int HSD = Integer.parseInt(offlineList.get(i).split(",")[10]); //HSD
+             int angleInfo = Integer.parseInt(offlineList.get(i).split(",")[11]); //角度信息
+             byte data0 = (byte) Integer.parseInt(offlineList.get(i).split(",")[0]);
+             byte data1 = (byte) Integer.parseInt(offlineList.get(i).split(",")[1]);
+             byte data2 = (byte) Integer.parseInt(offlineList.get(i).split(",")[2]);
+             int hands = (data2 & 0xc0) >> 6;
+             //??
+             int angle = (byte) Integer.parseInt(offlineList.get(i).split(",")[8]);
+             int angleChange = (byte) Integer.parseInt(offlineList.get(i).split(",")[9]);
+
+             String str_offlineDate = Integer.parseInt("20" + offlineList.get(i).split(",")[0]) + "-"
+                     +  (data1 & 0x7f) + "-"
+                     +  (data2 & 0x3f) + " "
+                     + Integer.parseInt(offlineList.get(i).split(",")[3]) + ":"
+                     + Integer.parseInt(offlineList.get(i).split(",")[4]) + ":00";
+
+             if (AppsDeviceParameters.isLog) {
+                 Log.i(TAG, "str_offlineDate = " + str_offlineDate);
+                 Log.i(TAG, "SYS = " + SYS + "-DIA=" + DIA + "-Pulse:" + Pulse + "-IsArr:" + IsArr +
+                         "--hands:" + hands
+                         + "--angle:" + angle + "--anglechange:" + angleChange);
+             }
+             if (AppsDeviceParameters.isLog) {
+                 Log.i(TAG, "convertOffline: 活动量 = "+activityAmount+" -- 角度信息 = "+angleInfo);
+             }
+             long ts = System.currentTimeMillis() / 1000;
+             try {
+                 eachData.put(BpProfile.MEASUREMENT_DATE_BP,    str_offlineDate);
+                 eachData.put(BpProfile.HIGH_BLOOD_PRESSURE_BP, SYS);
+                 eachData.put(BpProfile.LOW_BLOOD_PRESSURE_BP,  DIA);
+                 eachData.put(BpProfile.PULSEWAVE_BP,           Pulse);
+                 eachData.put(BpProfile.MEASUREMENT_AHR_BP,     IsArr);
+                 eachData.put(BpProfile.MEASUREMENT_HSD_BP,     HSD);
+                 eachData.put(BpProfile.ANGLE_BP,               angleInfo);             //AV23协议 添加
+                 eachData.put(BpProfile.ACTIVITY_AMOUNT_BP,     activityAmount);        //AV23协议 添加
+
+                 eachData.put(BpProfile.DATAID, MD5.md5String(PublicMethod.getBPDataID(mAddress, Pulse+"", ts)));
+                 eachArray.put(eachData);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+             mA1DBtools.save(mContext, mUserName, mAddress, mType, SYS, DIA, Pulse, ts);
+         }
+         try {
+			jsonObject.putOpt(BpProfile.HISTORICAL_DATA_BP, eachArray);
+			mInsCallback.onNotify(mAddress, mType, BpProfile.ACTION_HISTORICAL_DATA_BP, jsonObject.toString());
+		 } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		 }
+    }
+    private ArrayList<String> offlineList;
+
+    @Override
+    public void haveNewDataUuid(String uuid, byte[] command) {
+
+    }
+
+    public void destroy(){
+        if(btcm != null)
+            btcm.destroy();
+        btcm = null;
+        mContext = null;
+        mBaseComm = null;
+    }
+}

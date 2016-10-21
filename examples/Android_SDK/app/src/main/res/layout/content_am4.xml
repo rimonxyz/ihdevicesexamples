@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.ihealth.sdk.AM4"
+    tools:showIn="@layout/activity_am4"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_SetUserMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetUserMessage" />
+
+            <Button
+                android:id="@+id/btn_GetUserMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="GetUserMessage" />
+
+            <Button
+                android:id="@+id/btn_SetUserID"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetUserID" />
+
+            <Button
+                android:id="@+id/btn_GetUserID"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="GetUserID" />
+
+            <Button
+                android:id="@+id/btn_Reset"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="Reset" />
+
+            <Button
+                android:id="@+id/btn_checkSwimPara"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="checkSwimPara" />
+
+            <Button
+                android:id="@+id/btn_SetSwimPara"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetSwimPara" />
+
+            <Button
+                android:id="@+id/btn_SetRemind"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetRemind" />
+
+            <Button
+                android:id="@+id/btn_GetRemind"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="GetRemind" />
+
+            <Button
+                android:id="@+id/btn_SetClock"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetClock" />
+
+            <Button
+                android:id="@+id/btn_GetClock"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="GetClock" />
+
+            <Button
+                android:id="@+id/btn_GetBattery"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="GetBattery" />
+
+            <Button
+                android:id="@+id/btn_SetRealTime"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetRealTime" />
+
+            <Button
+                android:id="@+id/btn_SetTimeMode"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SetTimeMode" />
+
+            <Button
+                android:id="@+id/btn_SyncStage"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SyncStage" />
+
+            <Button
+                android:id="@+id/btn_SyncSleep"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SyncSleep" />
+
+            <Button
+                android:id="@+id/btn_SyncSport"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SyncSport" />
+
+            <Button
+                android:id="@+id/btn_SyncReal"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="SyncReal" />
+
+            <Button
+                android:id="@+id/btn_askDeviceInfo"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="AskDeviceInfo" />
+
+
+            <Button
+                android:id="@+id/btn_startUpgrade"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="StartUpgrade" />
+
+            <Button
+                android:id="@+id/btn_destroyUp"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="DestroyUp" />
+
+            <Button
+                android:id="@+id/btn_isUpgrade"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="IsUpgrade" />
+
+
+            <TextView
+                android:id="@+id/tv_return"
+                android:layout_width="fill_parent"
+                android:layout_height="150dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

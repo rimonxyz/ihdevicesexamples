@@ -1,0 +1,70 @@
+package com.ihealth.communication.control;
+
+/**
+ * Public APIs for the HTS device profiles
+ */
+public class BtmProfile {
+    /**
+     * Receive a temperature  for first user
+     */
+    public static final String ACTION_BTM_TEMPERATURE_FIRSTUSER = "temperature_firstuser";
+    /**
+     * Receive a temperature  for second user
+     */
+    public static final String ACTION_BTM_TEMPERATURE_SECONDUSER = "temperature_seconduser";
+    /**
+     * The temperature for BTM device.  Unit:celsius
+     */
+    public static final String BTM_TEMPERATURE = "temperature";
+    /**
+     * The power status for BTM device.  True: low power  False: normal
+     */
+    public static final String BTM_LowPower = "lowpower";
+
+
+
+    /**
+     * Receive memory count  for first user
+     */
+    public static final String ACTION_BTM_MEMORY_COUNT_FIRSTUSER = "memorycount_firstuser";
+    /**
+     * Receive memory count  for second user
+     */
+    public static final String ACTION_BTM_MEMORY_COUNT_SECONDUSER = "memorycount_seconduser";
+    /**
+     * The count of memory  for first user
+     */
+    public static final String MEMORY_COUNT_FIRSTUSER = "count_firstuser";
+    /**
+     * The count of memory  for second user
+     */
+    public static final String MEMORY_COUNT_SECONDUSER = "count_seconduser";
+
+
+
+    /**
+     * Receive memory data  for first user
+     */
+    public static final String ACTION_BTM_MEMORY_FIRSTUSER = "memory_firstuser";
+    /**
+     * Receive memory data  for second user
+     */
+    public static final String ACTION_BTM_MEMORY_SECONDUSER = "memory_seconduser";
+    /**
+     * The time of memory data  Format: yyyy-MM-dd HH:mm
+     */
+    public static final String BTM_MEASURE_TIME = "measure_time";
+
+
+
+
+    /**
+     * Callback indicating the battery of BTM device.
+     */
+    public static final String ACTION_BTM_BATTERY = "battery_btm";
+    /**
+     * The battery for BTM device.
+     */
+    public static final String BTM_BATTERY = "battery";
+
+}

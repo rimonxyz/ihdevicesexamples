@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-23.1.1_0ff5df480ed307d90c13ed074e7d1880ee016bae.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.1.1_f992e947fadc63dafe2b050bd0b95b0af7e726d7.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1_7efaf28f2c525326e31ddb94b470817f7f63e77c.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/iHealthSDKLib/ihealthdevicesdk/unspecified/jars/libs/smartlinklib3.6.4_product.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="bb074eede12482bb2d312051a7c34046d9fd1d2a">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/smartlinklib3.6.4_product_f6e9cff7ec9b23c38650d99f7929caf40a4cc75e.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/iHealthSDKLib/ihealthdevicesdk/unspecified/jars/libs/btle.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="0481efec28e3050e6b32101fe0c8958c1aa82cb9">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/btle_9a1eb13eb9369fcbbd903f276259db993530ee22.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/iHealthSDKLib/ihealthdevicesdk/unspecified/jars/libs/pl2303driver.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="d2cae1cd63adc378540945c0fec49fd5baaa6a3f">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/pl2303driver_326ffb261199a423db57338a023a4753366095de.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/iHealthSDKLib/ihealthdevicesdk/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="fdb10a712650a23a13eac096d9c8b7d98c283c18">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/iHealthSDKLib-ihealthdevicesdk-unspecified_3ad2af52434de2ab44553bed1db0681d042163a0.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/iHealthSDKLib/ihealthdevicesdk/unspecified/jars/libs/d2xx.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e987f6175963fa4c2886451ec53feed5d644ba90">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/d2xx_cedcc31ac0f8ebe3fbd8a62912a435170f7b6cf0.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.1.1_4e5980df9dc05b6fc8077f8fbcc2c90ac8ee44f8.jar" />
+    </item>
+    <item
+        jar="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/com.android.support-design-23.1.1_c8013628e62f3a6153fc51da56207afea578bcda.jar" />
+    </item>
+    <item
+        jar="/Users/apple/Desktop/adt-bundle-mac-x86_64-20140702/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
+        <dex dex="/Users/apple/SVN/Ihealthlibrary/branches/iHealthSDKLib/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1_857988acc50f8165d1fc424a816a0f0650dabbd1.jar" />
+    </item>
+
+</items>

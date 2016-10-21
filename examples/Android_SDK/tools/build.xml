@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<project name ="ihealthdevicesdk" default="jar" basedir="/Users/jing/Desktop/App-Android/Android_SDK">
+   
+    <property
+        name="proguard-folder"
+        value="/Users/jing/Library/Android/sdk/tools/proguard" />
+    <property
+        name="temp-folder"
+        value="/Users/jing/Desktop/App-Android/Android_SDK/temp" />
+
+    <path id="lib_classpath">
+    	<fileset dir = "/Users/jing/Library/Android/sdk/platforms/android-21/">
+    		<include name="*.jar" />
+    	</fileset>
+        <fileset dir = "${basedir}/ihealthdevicesdk/libs">
+            <include name="*.jar" />
+        </fileset>
+    </path>	
+    <target name="clean">
+        <delete dir="${temp-folder}/classes"/>
+        <delete dir="${temp-folder}/jar"/>
+        <delete dir="${temp-folder}"/>
+    </target>
+    <target name="compile" depends ="clean">
+        <mkdir dir ="${temp-folder}"/>
+        <mkdir dir ="${temp-folder}/jar"/>
+        <mkdir dir ="${temp-folder}/classes"/>
+        <javac srcdir ="${basedir}/ihealthdevicesdk/src/main/java/com/ihealth" destdir ="${temp-folder}/classes">
+			<classpath refid="lib_classpath"/>
+        </javac>
+    </target>
+    <target name="jar" depends="compile">
+        <jar destfile="${basedir}/output/jar/iHealthDeviceLib.jar" basedir="${temp-folder}/classes">
+        </jar>
+    </target >
+    
+</project>

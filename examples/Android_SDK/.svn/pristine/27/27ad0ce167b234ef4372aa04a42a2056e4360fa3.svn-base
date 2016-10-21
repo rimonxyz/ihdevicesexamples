@@ -1,0 +1,63 @@
+package com.ihealth.communication.utils;
+
+/**
+ * Created by jing on 16/9/27.
+ */
+
+public class Log {
+
+    private Log() {
+    }
+
+    /**
+     * Send a VERBOSE log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    public static int v(String tag, String msg) {
+        return Logger.v(tag, msg);
+    }
+
+    /**
+     * Send a DEBUG log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    public static int d(String tag, String msg) {
+        return Logger.d(tag, msg);
+    }
+
+    /**
+     * Send an INFO log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    public static int i(String tag, String msg) {
+        return Logger.i(tag, msg);
+    }
+
+    /**
+     * Send a WARN log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    public static int w(String tag, String msg) {
+        return Logger.w(tag, msg);
+    }
+
+    /**
+     * Send an ERROR log message.
+     * @param tag Used to identify the source of a log message.  It usually identifies
+     *        the class or activity where the log call occurs.
+     * @param msg The message you would like logged.
+     */
+    public static int e(String tag, String msg) {
+        return Logger.e(tag, msg);
+    }
+
+
+}

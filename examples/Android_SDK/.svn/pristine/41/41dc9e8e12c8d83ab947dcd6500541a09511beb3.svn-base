@@ -1,0 +1,102 @@
+package com.ihealth.communication.commandcache;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import com.ihealth.communication.manager.iHealthDevicesCallback;
+
+/**
+ * Created by jing on 16/10/11.
+ */
+
+public class CommandCacheControl {
+
+    private String mac;
+    private String type;
+    private Queue<CommandCache> commandCacheQueue = new LinkedList<>();
+
+    private class CommandCache {
+        private List<String> actions = new ArrayList<>();
+        private CommandCacheInterface listener;
+        private long executeDelay = 2000;
+
+        public CommandCache(List<String> actions, long executeDelay, CommandCacheInterface listener) {
+            this.actions = actions;
+            this.listener = listener;
+            this.executeDelay = executeDelay;
+        }
+
+        public List<String> getActions() {
+            return actions;
+        }
+
+        public CommandCacheInterface getListener() {
+            return listener;
+        }
+
+        public long getExecuteDelay() {
+            return executeDelay;
+        }
+
+    }
+
+    /**
+     * Init
+     * @param mac
+     * @param type
+     */
+    public CommandCacheControl(String mac, String type) {
+        this.mac = mac;
+        this.type = type;
+    }
+
+    /**
+     * Cache command for InsSet
+     * @param actions
+     * @param executeDelay
+     * @param listener
+     */
+    public void commandExecuteInsSet(List<String> actions, long executeDelay, CommandCacheInterface listener){
+        CommandCache commandCache = new CommandCache(actions, executeDelay, listener);
+        if (commandCacheQueue.isEmpty()) {
+            commandCacheQueue.offer(commandCache);
+            //Execute InsSet
+            listener.commandListener();
+        } else {
+            commandCacheQueue.offer(commandCache);
+        }
+    }
+
+    /**
+     * Receive action from {@link iHealthDevicesCallback#onDeviceNotify(String, String, String, String)}, then execute the next command.
+     * @param action
+     */
+    public void commandExecuteAction(String action) {
+        CommandCache commandCache = commandCacheQueue.peek();
+        if (commandCache != null && action != null) {
+            List actions = commandCache.getActions();
+            if (actions != null && actions.contains(action)) {
+                commandCacheQueue.poll();
+                if (!commandCacheQueue.isEmpty()) {
+                    commandCache = commandCacheQueue.peek();
+                    CommandCacheInterface listener = commandCache.getListener();
+                    if (listener != null) {
+                        //Execute InsSet
+                        listener.commandListener();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Clear all the cache, eg. Device disconnect from {@link iHealthDevicesCallback#onDeviceConnectionStateChange(String, String, int, int, Map)}
+     */
+    public void commandClearCache() {
+        if (!commandCacheQueue.isEmpty()){
+            commandCacheQueue.clear();
+        }
+    }
+}

@@ -1,0 +1,258 @@
+package com.ihealth.communication.ins;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.ihealth.communication.base.ble.BleComm;
+import com.ihealth.communication.base.ble.BleConfig;
+import com.ihealth.communication.base.comm.BaseComm;
+import com.ihealth.communication.base.comm.BaseCommCallback;
+import com.ihealth.communication.base.comm.NewDataCallback;
+import com.ihealth.communication.base.protocol.BleCommContinueProtocol;
+import com.ihealth.communication.control.BtmProfile;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.UUID;
+
+/**
+ * Created by apple on 1/13/16.
+ */
+public class BtmInsSet implements NewDataCallback {
+
+
+    private static final String TAG = "BtmInsSet";
+    private Context mContext;
+    private BaseComm mComm;
+    private String mAddress;
+    private String mType;
+    private InsCallback mInsCallback;
+
+    private int memoryCountForFirstUser = 0;
+    private int recCountForFirstUser = 0;
+    private int memoryCountForSecondUser = 0;
+    private int recCountForSecondUser = 0;
+    private JSONArray memeoryArrayForFirstUser = new JSONArray();
+    private JSONArray memeoryArrayForSecondUser = new JSONArray();
+
+
+    private BleCommContinueProtocol mbleCommContinueProtocol;
+
+    public BtmInsSet(Context context, BaseComm com, String userName, String mac, String type, InsCallback insCallback, BaseCommCallback mBaseCommCallback){
+        this.mContext = context;
+        this.mComm = com;
+        this.mAddress = mac;
+        this.mType = type;
+        this.mInsCallback = insCallback;
+        this.mbleCommContinueProtocol = new BleCommContinueProtocol(com, mac, this);
+    }
+
+    public boolean getBattery(){
+        BleComm bleComm = null;
+        if (!(mComm instanceof BleComm))
+            return false;
+        else
+            bleComm = (BleComm)mComm;
+        UUID serviceUuid = UUID.fromString(BleConfig.UUID_BTM_BATTERY_SERVICE);
+        UUID charaticUuid = UUID.fromString(BleConfig.UUID_BTM_BATTERY_LEVEL_CHARACTERISTIC);
+        return bleComm.Obtain(mAddress, serviceUuid, charaticUuid);
+    }
+
+    public void setTime(){
+        Calendar calenda = Calendar.getInstance();
+        calenda.setTimeZone(TimeZone.getDefault());
+        int year = calenda.get(Calendar.YEAR) - 2000;
+        int month = calenda.get(Calendar.MONTH) + 1;
+        int day = calenda.get(Calendar.DAY_OF_MONTH);
+        int hour = calenda.get(Calendar.HOUR_OF_DAY);
+        int min = calenda.get(Calendar.MINUTE);
+        int sed = calenda.get(Calendar.SECOND);
+
+        byte[] returnCommand = new byte[8];
+        returnCommand[0] = (byte) 0xd0;
+        returnCommand[1] = (byte) 0xa0;
+        returnCommand[2] = (byte) year;
+        returnCommand[3] = (byte) month;
+        returnCommand[4] = (byte) day;
+        returnCommand[5] = (byte) hour;
+        returnCommand[6] = (byte) min;
+        returnCommand[7] = generateCKS(returnCommand);
+
+        mComm.sendData(mAddress, returnCommand);
+        
+    }
+
+    public boolean getUserData(int index){
+        byte[] returnCommand = new byte[3];
+        returnCommand[0] = (byte) 0xd0;
+        if(index == 1){
+            returnCommand[1] = (byte) 0xa1;
+        }else if(index == 2){
+            returnCommand[1] = (byte) 0xa2;
+        }else{
+            returnCommand[1] = (byte) 0xa2;
+        }
+        returnCommand[2] = generateCKS(returnCommand);
+        mComm.sendData(mAddress, returnCommand);
+        return true;
+    }
+
+    @Override
+    public void haveNewData(int what, int stateId, byte[] command) {
+
+    }
+
+    @Override
+    public void haveNewDataUuid(String uuid, byte[] command) {
+        if (uuid.equals(BleConfig.UUID_BTM_BATTERY_LEVEL_CHARACTERISTIC)){
+            int batteryLevel = command[0];
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(BtmProfile.BTM_BATTERY, batteryLevel);
+                mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_BATTERY, jsonObject.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if(uuid.equals(BleConfig.UUID_BTM_READ_DATA_CHARACTERISTIC)){
+            //判断命令头
+            if ((command[0]&0xFF) != 0xD0) {
+                return;
+            }
+
+            int commandId = command[1]&0xff;
+            switch (commandId){
+                case 0xa3:
+                    String temp1 = new DecimalFormat("#.0").format(((command[2]&0xff)*256 + (command[3]&0xff)) / 100.0);
+                    boolean lowPower1 = ((command[4]&0xff)==0xC4)?true:false;
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put(BtmProfile.BTM_TEMPERATURE, Float.valueOf(temp1));
+                        jsonObject.put(BtmProfile.BTM_LowPower, lowPower1);
+                        mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_TEMPERATURE_FIRSTUSER, jsonObject.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 0xa4:
+                    String temp2 =new DecimalFormat("#.0").format(((command[2]&0xff)*256 + (command[3]&0xff)) / 100.0);
+                    boolean lowPower2 = ((command[4]&0xff)==0xC4)?true:false;
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put(BtmProfile.BTM_TEMPERATURE, Float.valueOf(temp2));
+                        jsonObject.put(BtmProfile.BTM_LowPower, lowPower2);
+                        mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_TEMPERATURE_SECONDUSER, jsonObject.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 0xa5:
+                    memoryCountForFirstUser = command[2]&0xff;
+                    memeoryArrayForFirstUser = null;
+                    memeoryArrayForFirstUser = new JSONArray();
+                    boolean lowPower3 = ((command[3]&0xff)==0xC4)?true:false;
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put(BtmProfile.MEMORY_COUNT_FIRSTUSER, memoryCountForFirstUser);
+                        jsonObject.put(BtmProfile.BTM_LowPower, lowPower3);
+                        mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_MEMORY_COUNT_FIRSTUSER, jsonObject.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 0xa6:
+                    memoryCountForSecondUser = command[2]&0xff;
+                    memeoryArrayForSecondUser = null;
+                    memeoryArrayForSecondUser = new JSONArray();
+                    boolean lowPower4 = ((command[3]&0xff)==0xC4)?true:false;
+                    try {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put(BtmProfile.MEMORY_COUNT_SECONDUSER, memoryCountForSecondUser);
+                        jsonObject.put(BtmProfile.BTM_LowPower, lowPower4);
+                        mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_MEMORY_COUNT_SECONDUSER, jsonObject.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 0xa7:
+                    try {
+                        recCountForFirstUser++;
+                        JSONObject jsonObject = decodeTemperature(command);
+                        if(jsonObject != null) {
+                            memeoryArrayForFirstUser.put(jsonObject);
+                        }
+                        if ((memeoryArrayForFirstUser.length() >= memoryCountForFirstUser) || memeoryArrayForFirstUser.length()==32 || recCountForFirstUser==32) {
+                            recCountForFirstUser = 0;
+                            mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_MEMORY_FIRSTUSER, memeoryArrayForFirstUser.toString());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 0xa8:
+                    try {
+                        recCountForSecondUser++;
+                        JSONObject jsonObject = decodeTemperature(command);
+                        if(jsonObject != null) {
+                            memeoryArrayForSecondUser.put(jsonObject);
+                        }
+                        if ((memeoryArrayForSecondUser.length() >= memoryCountForSecondUser) || memeoryArrayForSecondUser.length()==32 || recCountForSecondUser==32) {
+                            recCountForSecondUser = 0;
+                            mInsCallback.onNotify(mAddress, mType, BtmProfile.ACTION_BTM_MEMORY_SECONDUSER, memeoryArrayForSecondUser.toString());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+
+        }
+
+    }
+
+    /**
+     * This method decode temperature value received from Health Thermometer device
+     *
+     */
+    private JSONObject decodeTemperature(byte[] command) throws Exception {
+        //非法数据
+        if (command[7]==0 && command[8]==0) {
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject();
+        int year = (command[2]&0xff) + 2000;
+        int month = command[3]&0xff;
+        int day = command[4]&0xff;
+        int hour = command[5]&0xff;
+        int mins = command[6]&0xff;
+        String time  = year + "-" + month + "-" + day + " " + hour + ":" + mins;
+        String temp = new DecimalFormat("#.0").format(((command[7]&0xff)*256 + (command[8]&0xff)) / 100.0);
+
+        jsonObject.put(BtmProfile.BTM_MEASURE_TIME,time);
+        jsonObject.put(BtmProfile.BTM_TEMPERATURE,Float.valueOf(temp));
+
+        return jsonObject;
+    }
+
+
+    private byte generateCKS(byte[] command) {
+        int sum = 0;
+        for (int i = 0; i < command.length; i++) {
+            sum = sum + command[i];
+        }
+        return (byte) sum;
+    }
+
+    public void destroy(){
+        mInsCallback = null;
+        mContext = null;
+        if(mbleCommContinueProtocol != null)
+            mbleCommContinueProtocol.destroy();
+        mbleCommContinueProtocol = null;
+    }
+
+}

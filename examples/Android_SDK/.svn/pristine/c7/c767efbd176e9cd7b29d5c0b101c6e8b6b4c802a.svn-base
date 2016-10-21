@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="btle">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ihealthdevicesdk/libs/btle.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

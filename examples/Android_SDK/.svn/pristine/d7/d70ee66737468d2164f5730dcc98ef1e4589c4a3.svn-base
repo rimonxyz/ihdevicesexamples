@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="smartlinklib3.6.4_product">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ihealthdevicesdk/libs/smartlinklib3.6.4_product.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

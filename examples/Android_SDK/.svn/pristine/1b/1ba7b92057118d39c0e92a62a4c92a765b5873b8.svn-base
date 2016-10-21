@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+//    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    //jing 20160927   调试HS6  BP3M时,需要改为 TRUE
+    def buildFlag = false
+    if (buildFlag) {
+        compile fileTree(dir: 'libs', include: ['*.jar'])
+    } else {
+        provided fileTree(dir: 'libs', include: ['*.jar'])
+    }
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'org.apache.httpcomponents:httpcore:4.4.4'
+
+}
+
+
+task makeJarLog(type: proguard.gradle.ProGuardTask, dependsOn: "build") {
+// 未混淆的jar
+    injars 'build/intermediates/bundles/release/classes.jar'
+// 混淆后的jar路径
+    outjars 'libs/iHealthLibrary_2.3.0.26_log.jar'
+// 具体需要keep住的类
+    configuration 'proguard-rules-log.pro'
+}
+
+task makeJar(type: proguard.gradle.ProGuardTask, dependsOn: "build") {
+// 未混淆的jar
+    injars 'build/intermediates/bundles/release/classes.jar'
+// 混淆后的jar路径
+    outjars 'libs/iHealthLibrary_2.3.0.26.jar'
+// 具体需要keep住的类
+    configuration 'proguard-rules.pro'
+}

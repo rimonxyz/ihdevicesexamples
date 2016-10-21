@@ -1,0 +1,180 @@
+package com.ihealth.sdk;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ihealth.communication.control.BtmControl;
+import com.ihealth.communication.control.BtmProfile;
+import com.ihealth.communication.manager.iHealthDevicesCallback;
+import com.ihealth.communication.manager.iHealthDevicesManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class BTM extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "BTM";
+    private BtmControl mBtmControl;
+    private String deviceMac;
+    private int clientCallbackId;
+    private TextView tv_return;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_btm);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        Intent intent = getIntent();
+        deviceMac = intent.getStringExtra("mac");
+        findViewById(R.id.btn_get_battery).setOnClickListener(this);
+        findViewById(R.id.btn_set_standby_time).setOnClickListener(this);
+        findViewById(R.id.btn_set_temperature_unit).setOnClickListener(this);
+        findViewById(R.id.btn_set_measuring_target).setOnClickListener(this);
+        findViewById(R.id.btn_set_offline_target).setOnClickListener(this);
+        findViewById(R.id.btn_get_memory_data).setOnClickListener(this);
+        findViewById(R.id.btn_disconnect).setOnClickListener(this);
+        tv_return = (TextView) findViewById(R.id.tv_return);
+        tv_return.setMovementMethod(ScrollingMovementMethod.getInstance());
+
+        tv_return.setTextIsSelectable(true);
+
+        clientCallbackId = iHealthDevicesManager.getInstance().registerClientCallback(miHealthDevicesCallback);
+        /* Limited wants to receive notification specified device */
+        iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, iHealthDevicesManager.TYPE_BTM);
+        /* Get btm controller */
+        mBtmControl = iHealthDevicesManager.getInstance().getBtmControl(deviceMac);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        iHealthDevicesManager.getInstance().unRegisterClientCallback(clientCallbackId);
+    }
+
+    private iHealthDevicesCallback miHealthDevicesCallback = new iHealthDevicesCallback() {
+
+        @Override
+        public void onDeviceConnectionStateChange(String mac,
+                                                  String deviceType, int status, int errorID) {
+            Log.i(TAG, "mac: " + mac);
+            Log.i(TAG, "deviceType: " + deviceType);
+            Log.i(TAG, "status: " + status);
+        }
+
+        @Override
+        public void onUserStatus(String username, int userStatus) {
+            Log.i(TAG, "username: " + username);
+            Log.i(TAG, "userState: " + userStatus);
+        }
+
+        @Override
+        public void onDeviceNotify(String mac, String deviceType,
+                                   String action, String message) {
+            Log.i(TAG, "mac:" + mac + " action:" + action + " message" + message);
+            if (BtmProfile.ACTION_BTM_BATTERY.equals(action)) {
+                try {
+                    JSONObject info = new JSONObject(message);
+                    String battery = info.getString(BtmProfile.BTM_BATTERY);
+                    Message msg = new Message();
+                    msg.what = HANDLER_MESSAGE;
+                    msg.obj = "battery: " + battery;
+                    myHandler.sendMessage(msg);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if (BtmProfile.ACTION_BTM_MEMORY.equals(action)) {
+                tv_return.setText(message);
+            } else if (BtmProfile.ACTION_BTM_MEASURE.equals(action)) {
+                tv_return.setText(message);
+            } else if (BtmProfile.ACTION_BTM_CALLBACK.equals(action)) {
+                tv_return.setText(message);
+            }
+        }
+    };
+
+    @Override
+    public void onClick(View arg0) {
+        tv_return.setText("");
+        switch (arg0.getId()) {
+            case R.id.btn_get_battery:
+                if (mBtmControl != null)
+                    mBtmControl.getBattery();
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_set_standby_time:
+                if (mBtmControl != null)
+                    mBtmControl.setStandbyTime(0, 1, 0);
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_set_temperature_unit:
+                if (mBtmControl != null)
+                    mBtmControl.setTemperatureUnit(BtmControl.TEMPERATURE_UNIT_C);
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_set_measuring_target:
+                if (mBtmControl != null)
+                    mBtmControl.setMeasuringTarget(BtmControl.MEASURING_TARGET_BODY);
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_set_offline_target:
+                if (mBtmControl != null)
+                    mBtmControl.setOfflineTarget(BtmControl.FUNCTION_TARGET_OFFLINE);
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_get_memory_data:
+                if (mBtmControl != null)
+                    mBtmControl.getMemoryData();
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            case R.id.btn_disconnect:
+                if (mBtmControl != null)
+                    mBtmControl.disconnect();
+                else
+                    Toast.makeText(BTM.this, "btmControl == null", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private static final int HANDLER_MESSAGE = 101;
+    Handler myHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case HANDLER_MESSAGE:
+                    tv_return.setText((String) msg.obj);
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+}

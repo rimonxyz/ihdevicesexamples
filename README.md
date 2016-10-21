@@ -4,7 +4,7 @@ This document describes how to use the iHealth Device SDK to accomplish the majo
 
 ### Latest version
 
-2.3.0
+2.3.1
 
 ### Support iHealth Device for Android
 
@@ -214,6 +214,11 @@ HS6Control hs6Control = new HS6Control(userName, this, iHealthDevicesManager.TYP
 * Get Po3 device controller
 */
 Po3Control po3Control = iHealthDevicesManager.getInstance().getPo3Control(mac);
+
+/*
+* Get FDTH device controller
+*/
+BtmControl btmControl = iHealthDevicesManager.getInstance().getBtmControl(mac);
 
 ```
 

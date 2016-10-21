@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<project name ="iHealthDeviceLib" default="jar" basedir="/Users/apple/SVN/iHealthAndroidSDK/branches">
+   
+    <property
+        name="proguard-folder"
+        value="/Users/apple/Desktop/adt-bundle-mac-x86_64-20140702/sdk/tools/proguard" />
+    <property
+        name="temp-folder"
+        value="/Users/apple/SVN/iHealthAndroidSDK/branches/temp" />
+
+    <path id="lib_classpath">
+    	<fileset dir = "/Users/apple/Desktop/adt-bundle-mac-x86_64-20140702/sdk/platforms/android-18/">
+    		<include name="*.jar" />
+    	</fileset>
+        <fileset dir = "${basedir}/iHealthSDKLib/ihealthdevicesdk/libs">
+            <include name="*.jar" />
+        </fileset>
+    </path>	
+    <target name="clean">
+        <delete dir="${temp-folder}/classes"/>
+        <delete dir="${temp-folder}/jar"/>
+        <delete dir="${temp-folder}"/>
+    </target>
+    <target name="compile" depends ="clean">
+        <mkdir dir ="${temp-folder}"/>
+        <mkdir dir ="${temp-folder}/jar"/>
+        <mkdir dir ="${temp-folder}/classes"/>
+        <javac srcdir ="${basedir}/iHealthSDKLib/ihealthdevicesdk/src/main/java/com/ihealth" destdir ="${temp-folder}/classes">
+			<classpath refid="lib_classpath"/>
+        </javac>
+    </target>
+    <target name="jar" depends="compile">
+        <jar destfile="${basedir}/output/jar/iHealthDeviceLib.jar" basedir="${temp-folder}/classes">
+        </jar>
+    </target >
+    
+</project>
