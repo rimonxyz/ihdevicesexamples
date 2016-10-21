@@ -52,7 +52,7 @@ Release Date: 2016-2-19
 Description: 
 	1.modify po offline data
 	2.modify time、step and calories error of AM device
-	3.modify user target data od AM devcie
+	3.modify user target data of AM device
 	4.modify repeat data of BP7S 550BT KD926
 Release Date: 2016-3-02
 ```

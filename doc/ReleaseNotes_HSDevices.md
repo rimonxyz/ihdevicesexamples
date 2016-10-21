@@ -1,6 +1,6 @@
 # Release notes for iHealth Device HS
 
-## Introducation
+## Introduction
 
 These release notes for iHealth Device HS provide an overview of the release and document.
 
