@@ -115,7 +115,7 @@ Description:
 Release Date: 2016-6-20
 ```
 
-### 13. V2.3.0
+### 14. V2.3.0
 ```
 Description: 
 	1.Support OneCode
@@ -124,7 +124,7 @@ Description:
 Release Date: 2016-6-28
 ```
 
-### 13. V2.3.1
+### 15. V2.3.1
 ```
 Description: 
 	1. Support update the firmware of device (AM3 AM3S AM4 HS4 HS4S)
