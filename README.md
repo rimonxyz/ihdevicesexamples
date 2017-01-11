@@ -111,7 +111,7 @@ private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallba
 ##### 6. Connection a iHealth device.
 
 ```java
-iHealthDevicesManager.getInstance().connectDevice(userName, mac);
+iHealthDevicesManager.getInstance().connectDevice(userName, mac, type);
 ```
 
 ```java
