@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_get_battery"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text=" Get Battery" />
+
+            <Button
+                android:id="@+id/btn_get_function_info"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Get Function Info" />
+
+            <Button
+                android:id="@+id/btn_set_display_unit"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Set display Unit" />
+
+            <Button
+                android:id="@+id/btn_set_measure_time"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Set Measure Time" />
+
+            <Button
+                android:id="@+id/btn_get_measure_time"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Get Measure Time" />
+
+            <Button
+                android:id="@+id/btn_set_alarm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Set Alarm" />
+
+            <Button
+                android:id="@+id/btn_get_alarm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Get Alarm" />
+
+            <Button
+                android:id="@+id/btn_get_alarm_type"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Get Alarm Type" />
+
+            <Button
+                android:id="@+id/btn_get_offline_num"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Get Offline Num" />
+
+            <Button
+                android:id="@+id/btn_get_offline_data"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Get Offline Data" />
+
+            <Button
+                android:id="@+id/btn_delete_all"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Delete All" />
+
+            <Button
+                android:id="@+id/btn_disconnect"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:text="Disconnect" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_return"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp" />
+
+
+
+</LinearLayout>
