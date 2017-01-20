@@ -57,18 +57,24 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="GotoABI" />
-        
+
             <Button
                 android:id="@+id/btn_GotoHS6"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="GotoHS6" />
 
+            <Button
+                android:id="@+id/btn_GotoBPM1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GotoBPM1" />
+
             <!--<Button-->
-                <!--android:id="@+id/btn_GotoTest"-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="GotoTest" />-->
+            <!--android:id="@+id/btn_GotoTest"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="GotoTest" />-->
 
             <TextView
                 android:layout_width="fill_parent"

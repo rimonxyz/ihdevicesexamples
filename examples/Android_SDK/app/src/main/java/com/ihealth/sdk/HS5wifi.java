@@ -24,9 +24,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,7 @@ public class HS5wifi extends Activity implements OnClickListener {
         findViewById(R.id.btn_getOfflineData).setOnClickListener(this);
         findViewById(R.id.btn_startMeasure).setOnClickListener(this);
         findViewById(R.id.btn_disconnect).setOnClickListener(this);
+        findViewById(R.id.btn_getUserList).setOnClickListener(this);
 
     }
 
@@ -318,6 +321,25 @@ public class HS5wifi extends Activity implements OnClickListener {
     };
 
     public void onClick(android.view.View v) {
+        EditText positionEditText = (EditText) findViewById(R.id.user_position);
+        EditText userIdEditText = (EditText) findViewById(R.id.user_id);
+        String positionString = positionEditText.getText().toString();
+        String userIdString = userIdEditText.getText().toString();
+        if (!TextUtils.isEmpty(positionString)) {
+            try {
+                position = Integer.parseInt(positionString.trim());
+            } catch (Exception e) {
+                position = 0;
+            }
+        }
+        if (!TextUtils.isEmpty(userIdString)) {
+            try {
+                userid = Integer.parseInt(userIdString.trim());
+            } catch (Exception e) {
+                userid = 123;
+            }
+        }
+        Log.d(TAG, "onClick() postion = " + position + ", userid = " + userid);
         switch (v.getId()) {
             case R.id.btn_creatManagement:
                 if (mHs5Control == null) {
@@ -334,7 +356,7 @@ public class HS5wifi extends Activity implements OnClickListener {
                     Log.i(TAG, "mHs5Control == null");
                     Toast.makeText(HS5wifi.this, "mHs5Control == null", Toast.LENGTH_LONG).show();
                 } else {
-                    mHs5Control.WriteUserToScale(emptyPosition, userid, 25, 150, 1, 0);
+                    mHs5Control.WriteUserToScale(position, userid, 25, 150, 0, 0);
                 }
 
                 break;
@@ -344,13 +366,7 @@ public class HS5wifi extends Activity implements OnClickListener {
                     Toast.makeText(HS5wifi.this, "mHs5Control == null", Toast.LENGTH_LONG).show();
 
                 } else {
-                    if (position != -1) {
-                        deletePosition = position;
-                    } else {
-                        deletePosition = 0;
-
-                    }
-                    mHs5Control.DeleteUserInScale(deletePosition); // delete the first user
+                    mHs5Control.DeleteUserInScale(position);
                 }
                 break;
             case R.id.btn_update:
@@ -359,7 +375,17 @@ public class HS5wifi extends Activity implements OnClickListener {
                     Toast.makeText(HS5wifi.this, "mHs5Control == null", Toast.LENGTH_LONG).show();
 
                 } else {
-                    mHs5Control.updateUserInfo(position, userid, 26, 170, 3, 0);
+                    mHs5Control.updateUserInfo(position, userid, 26, 170, 0, 0);
+                }
+                break;
+            case R.id.btn_getUserList:
+                if (mHs5Control == null) {
+                    Log.i(TAG, "mHs5Control == null");
+                    Toast.makeText(HS5wifi.this, "mHs5Control == null", Toast.LENGTH_LONG).show();
+
+                } else {
+                    tv_return.setText(mHs5Control.getUserListInHs5().toString());
+                    Log.d(TAG, "userList = " + mHs5Control.getUserListInHs5());
                 }
                 break;
             case R.id.btn_getOfflineData:

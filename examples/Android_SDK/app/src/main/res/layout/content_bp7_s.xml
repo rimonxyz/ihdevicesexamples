@@ -14,6 +14,11 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/btn_getIDPS"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="GetIDPS" />
+    <Button
         android:id="@+id/btn_getbattery"
         android:layout_width="fill_parent"
         android:layout_height="50dp"

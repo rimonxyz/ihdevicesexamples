@@ -23,6 +23,7 @@
     <string name="bluetooth_devicelist_dialog_ssid">SSID:</string>
     <string name="bluetooth_devicelist_dialog_type">Type:</string>
     <string name="bluetooth_devicelist_dialog_password">Password:</string>
+    <string name="bluetooth_devicelist_dialog_deviceKey">DeviceKey:</string>
     <string name="bluetooth_setwifi_title">set Wi-Fi</string>
     <string name="ok">ok</string>
     <string name="cancel">cancel</string>

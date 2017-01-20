@@ -23,7 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class HS4S extends AppCompatActivity implements View.OnClickListener{
+public class HS4S extends AppCompatActivity implements View.OnClickListener {
 
     private static String TAG = "HS4S";
 
@@ -69,7 +69,7 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
 
     iHealthDevicesCallback mIHealthDevicesCallback = new iHealthDevicesCallback() {
 
-        public void onDeviceConnectionStateChange(String mac, String deviceType, int status,int errorID) {
+        public void onDeviceConnectionStateChange(String mac, String deviceType, int status, int errorID) {
             Log.e(TAG, "mac:" + mac + "-deviceType:" + deviceType + "-status:" + status);
 
             switch (status) {
@@ -83,7 +83,9 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
                 default:
                     break;
             }
-        };
+        }
+
+        ;
 
         public void onDeviceNotify(String mac, String deviceType, String action, String message) {
             Log.d(TAG, "mac:" + mac + "--type:" + deviceType + "--action:" + action + "--message:" + message);
@@ -96,9 +98,9 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                             String dateString = jsonObject.getString(HsProfile.MEASUREMENT_DATE_HS);
-                            String dataId=jsonObject.getString(HsProfile.DATAID);
+                            String dataId = jsonObject.getString(HsProfile.DATAID);
                             float weight = (float) jsonObject.getDouble(HsProfile.WEIGHT_HS);
-                            Log.d(TAG, "dataId:"+dataId+"--date:" + dateString + "-weight:" + weight);
+                            Log.d(TAG, "dataId:" + dataId + "--date:" + dateString + "-weight:" + weight);
                         }
                         Message message2 = new Message();
                         message2.what = 1;
@@ -128,10 +130,10 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
                     try {
                         JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
                         float weight = (float) jsonObject.getDouble(HsProfile.WEIGHT_HS);
-                        String dataId=jsonObject.getString(HsProfile.DATAID);
+                        String dataId = jsonObject.getString(HsProfile.DATAID);
 
-                        Log.d(TAG,"dataId:"+dataId+ "---weight:" + weight);
-                        noticeString = "dataId:"+dataId+ "---weight:" + weight;
+                        Log.d(TAG, "dataId:" + dataId + "---weight:" + weight);
+                        noticeString = "dataId:" + dataId + "---weight:" + weight;
 
                         Message message3 = new Message();
                         message3.what = 1;
@@ -155,7 +157,9 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
     String noticeString = "";
     Handler mHandler = new Handler() {
@@ -168,7 +172,9 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
 
     @Override
@@ -197,6 +203,9 @@ public class HS4S extends AppCompatActivity implements View.OnClickListener{
 
                 } else {
                     mHs4sControl.measureOnline(1, usrId);
+                    for (int i = 0; i < 100; i++) {
+                        mHs4sControl.getOfflineData();
+                    }
                 }
                 break;
             case R.id.btn_disconnect:

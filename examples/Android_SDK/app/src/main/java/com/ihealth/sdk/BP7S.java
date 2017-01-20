@@ -48,6 +48,7 @@ public class BP7S extends AppCompatActivity implements View.OnClickListener{
 
         Intent intent = getIntent();
         deviceMac = intent.getStringExtra("mac");
+        findViewById(R.id.btn_getIDPS).setOnClickListener(this);
         findViewById(R.id.btn_getbattery).setOnClickListener(this);
         findViewById(R.id.btn_getOfflineNum).setOnClickListener(this);
         findViewById(R.id.btn_getOffineData).setOnClickListener(this);
@@ -130,7 +131,7 @@ public class BP7S extends AppCompatActivity implements View.OnClickListener{
                             String date          = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
                             String hightPressure = obj.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
                             String lowPressure   = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
-                            String pulseWave     = obj.getString(BpProfile.PULSEWAVE_BP);
+                            String pulseWave     = obj.getString(BpProfile.PULSE_BP);
                             String ahr           = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
                             String hsd           = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
                             str = "date:" + date
@@ -167,9 +168,19 @@ public class BP7S extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View arg0) {
         switch (arg0.getId()) {
+
+            case R.id.btn_getIDPS:
+                if (bp7sControl != null) {
+                    String idps = bp7sControl.getIdps();
+                    Log.e(TAG,"IDPS = " + idps);
+                }
+                else
+                    Toast.makeText(BP7S.this, "bp7sControl == null", Toast.LENGTH_LONG).show();
+                break;
             case R.id.btn_getbattery:
-                if(bp7sControl != null)
+                if(bp7sControl != null) {
                     bp7sControl.getBattery();
+                }
                 else
                     Toast.makeText(BP7S.this, "bp7sControl == null", Toast.LENGTH_LONG).show();
                 break;
@@ -202,7 +213,7 @@ public class BP7S extends AppCompatActivity implements View.OnClickListener{
                 break;
             case R.id.btn_setangle:
                 if(bp7sControl != null)
-                    bp7sControl.angleSet((byte)0x01, (byte)0x01, (byte)0x01, (byte)0x01);
+                    bp7sControl.angleSet((byte)90, (byte)60, (byte)90, (byte)60);
                 else
                     Toast.makeText(BP7S.this, "bp7sControl == null", Toast.LENGTH_LONG).show();
                 break;

@@ -8,15 +8,6 @@
 
 package com.ihealth.sdk;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import com.ihealth.communication.control.HS6Control;
-import com.ihealth.communication.manager.iHealthDeviceHs6Callback;
-import com.ihealth.communication.manager.iHealthDevicesManager;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -26,16 +17,25 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.ihealth.communication.control.HS6Control;
+import com.ihealth.communication.manager.iHealthDeviceHs6Callback;
+import com.ihealth.communication.manager.iHealthDevicesManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class HS6 extends Activity implements OnClickListener {
 
@@ -262,7 +262,7 @@ public class HS6 extends Activity implements OnClickListener {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        boolean permission = mHS6control.setUnit(userName,HS6Control.Unit_Lbs);
+                        boolean permission = mHS6control.setUnit(userName, HS6Control.Unit_Lbs);
                         if (!permission) {
                             noticeString = "You haven't gotten the permission, please go to certificate firstly";
                             mHandler.sendEmptyMessage(1);
@@ -281,12 +281,14 @@ public class HS6 extends Activity implements OnClickListener {
     private void showSetWifiDialog() {
         LayoutInflater wifiPwdInput = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View viewPwd = wifiPwdInput.inflate(R.layout.bluetoothsetwifidialogeitem, null);
-        final EditText etPwd;
         final TextView tvSSID;
+        final EditText etPwd;
+        final EditText etDeviceKey;
         tvSSID = (TextView) viewPwd.findViewById(R.id.btSetWiFi_tv_SSID);
         ssid = getSSid();
         tvSSID.setText(ssid);
         etPwd = (EditText) viewPwd.findViewById(R.id.btSetWiFi_et_Pwd);
+        etDeviceKey = (EditText) viewPwd.findViewById(R.id.btSetWiFi_et_device_key);
         new Builder(this).setTitle(this.getResources().getString(R.string.bluetooth_setwifi_title))
                 .setView(viewPwd)
                 .setCancelable(false)
@@ -299,7 +301,12 @@ public class HS6 extends Activity implements OnClickListener {
                                     new Thread() {
                                         @Override
                                         public void run() {
-                                            boolean permission = mHS6control.setWifi(ssid, etPwd.getText().toString());
+                                            boolean permission;
+                                            if (TextUtils.isEmpty(etDeviceKey.getText().toString())) {
+                                                permission = mHS6control.setWifi(ssid, etPwd.getText().toString());
+                                            } else {
+                                                permission = mHS6control.setWifi(ssid, etPwd.getText().toString(), etDeviceKey.getText().toString());
+                                            }
                                             if (!permission) {
                                                 noticeString = "You haven't gotten the permission, please go to certificate firstly";
                                                 mHandler.sendEmptyMessage(1);
@@ -322,7 +329,7 @@ public class HS6 extends Activity implements OnClickListener {
     }
 
     private String getSSid() {
-        WifiManager wm = (WifiManager) this.getSystemService(this.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         if (wm != null) {
             WifiInfo wi = wm.getConnectionInfo();
             if (wi != null) {

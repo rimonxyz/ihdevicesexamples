@@ -29,8 +29,7 @@ import java.util.TimerTask;
  */
 
 
-
-public class BG5l extends AppCompatActivity implements View.OnClickListener{
+public class BG5l extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = this.getClass().toString();
     private Bg5lControl bg5lControl;
@@ -38,7 +37,6 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
     private int clientCallbackId;
     private TextView tv_return;
     public String QRCode = "02323C641E3114322D0800A064646464646464646464FA012261000E1CCC";
-//    public String QRCode = "123456e10adc3949ba59abbe56e057f20f883e";
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -74,12 +72,12 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
         findViewById(R.id.btn_holdLink).setOnClickListener(this);
         findViewById(R.id.btn_disconnect).setOnClickListener(this);
 
-        tv_return = (TextView)findViewById(R.id.tv_msgReturn);
+        tv_return = (TextView) findViewById(R.id.tv_msgReturn);
 
         clientCallbackId = iHealthDevicesManager.getInstance().registerClientCallback(miHealthDevicesCallback);
-		/* Limited wants to receive notification specified device */
+        /* Limited wants to receive notification specified device */
         iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, iHealthDevicesManager.TYPE_BG5l);
-		/* Get bg5 controller */
+        /* Get bg5 controller */
         bg5lControl = iHealthDevicesManager.getInstance().getBG5lControl(deviceMac);
 //        bg5lControl.setTime();
     }
@@ -93,95 +91,92 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.btn_getBattery:
-                if(bg5lControl != null)
+                if (bg5lControl != null) {
                     bg5lControl.getBattery();
-                else
+                } else {
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
+                }
 
                 break;
             case R.id.btn_syncTime:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.setTime();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_syncUnit:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.setUnit(1);
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_getBottleId:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.getBottleId();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_getCode:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.getBottleMessage();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_getOfflineData:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.getOfflineData();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_deleteOfflineData:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.deleteOfflineData();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_sendQRCode:
-                if(bg5lControl != null) {
+                if (bg5lControl != null) {
                     String QRInfo = bg5lControl.getBottleInfoFromQR(QRCode);
-                    Log.e(TAG, "QRinfo =" + QRInfo);
-
-                    bg5lControl.setBottleMessage(QRCode);
-                }
-
-                else
+                    Log.i(TAG, "QRinfo =" + QRInfo);
+                    bg5lControl.setBottleMessageWithInfo(1, 1, QRCode, 20, "2017-2-14");
+                } else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_setBottleMessage:
-                if(bg5lControl != null)
-                    bg5lControl.setBottleMessage(QRCode,  20, "2017-2-14");
-                else
+                if (bg5lControl != null) {
+                    bg5lControl.setBottleMessageWithInfo(2, 1, "", 20, "2017-2-14");
+                } else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_startMeasure:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.startMeasure(1);
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_holdLink:
-                if(bg5lControl != null)
+                if (bg5lControl != null)
                     bg5lControl.holdLink();
                 else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_disconnect:
-                if(bg5lControl != null) {
+                if (bg5lControl != null) {
                     closeTimer();
                     bg5lControl.disconnect();
-                }
-                else
+                } else
                     Toast.makeText(BG5l.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
@@ -197,7 +192,7 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
             Log.i(TAG, "mac: " + mac);
             Log.i(TAG, "deviceType: " + deviceType);
             Log.i(TAG, "status: " + status);
-            if(status == 2) {//disconnect
+            if (status == 2) {//disconnect
                 closeTimer();
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
@@ -220,26 +215,24 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
             Log.i(TAG, "action: " + action);
             Log.i(TAG, "message: " + message);
 
-            if(Bg5Profile.ACTION_BATTERY_BG.equals(action)){
+            if (Bg5Profile.ACTION_BATTERY_BG.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String battery =info.getString(Bg5Profile.BATTERY_BG);
+                    String battery = info.getString(Bg5Profile.BATTERY_BG);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "battery: " + battery;
                     myHandler.sendMessage(msg);
-
-//                    bg5lControl.getOfflineData();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
 
-            } else if(Bg5Profile.ACTION_ERROR_BG.equals(action)){
+            } else if (Bg5Profile.ACTION_ERROR_BG.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String num =info.getString(Bg5Profile.ERROR_NUM_BG);
+                    String num = info.getString(Bg5Profile.ERROR_NUM_BG);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "error num: " + num;
@@ -248,10 +241,10 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            } else if(Bg5Profile.ACTION_GET_BOTTLEID.equals(action)){
+            } else if (Bg5Profile.ACTION_GET_BOTTLEID.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String bottleId =info.getString(Bg5Profile.GET_BOTTLEID);
+                    String bottleId = info.getString(Bg5Profile.GET_BOTTLEID);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "bottleId: " + bottleId;
@@ -259,11 +252,11 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } else if(Bg5Profile.ACTION_GET_CODEINFO.equals(action)){
+            } else if (Bg5Profile.ACTION_GET_CODEINFO.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String expireTime =info.getString(Bg5Profile.GET_EXPIRECTIME);
-                    String usedNum =info.getString(Bg5Profile.GET_USENUM);
+                    String expireTime = info.getString(Bg5Profile.GET_EXPIRECTIME);
+                    String usedNum = info.getString(Bg5Profile.GET_USENUM);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "bottleInfo: " + info;
@@ -272,17 +265,17 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            } else if(Bg5Profile.ACTION_HISTORICAL_DATA_BG.equals(action)){
-                    Log.e(TAG, "History data successfully!");
+            } else if (Bg5Profile.ACTION_HISTORICAL_DATA_BG.equals(action)) {
+                Log.e(TAG, "History data successfully!");
 
-                    Message msg = new Message();
-                    msg.what = HANDLER_MESSAGE;
-                    msg.obj = "History data successfully!";
-                    myHandler.sendMessage(msg);
-                    bg5lControl.deleteOfflineData();
+                Message msg = new Message();
+                msg.what = HANDLER_MESSAGE;
+                msg.obj = "History data successfully!";
+                myHandler.sendMessage(msg);
+//                    bg5lControl.deleteOfflineData();
 
 
-            }else if(Bg5Profile.ACTION_ONLINE_RESULT_BG.equals(action)){
+            } else if (Bg5Profile.ACTION_ONLINE_RESULT_BG.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
                     String result = info.getString(Bg5Profile.ONLINE_RESULT_BG);
@@ -294,7 +287,7 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            } else if(Bg5Profile.ACTION_SET_TIME.equals(action)){
+            } else if (Bg5Profile.ACTION_SET_TIME.equals(action)) {
                 Log.e(TAG, "set time successfully");
 
                 Message msg = new Message();
@@ -302,9 +295,9 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                 msg.obj = "set time successfully!";
                 myHandler.sendMessage(msg);
 
-                bg5lControl.setUnit(1);
+//                bg5lControl.setUnit(1);
 
-            } else if(Bg5Profile.ACTION_SET_UNIT.equals(action)){
+            } else if (Bg5Profile.ACTION_SET_UNIT.equals(action)) {
                 Log.e(TAG, "set unit successfully");
 
                 Message msg = new Message();
@@ -312,54 +305,44 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
                 msg.obj = "set unit successfully!";
                 myHandler.sendMessage(msg);
 
-                bg5lControl.getBattery();
+//                bg5lControl.getBattery();
 
-            } else if(Bg5Profile.ACTION_STRIP_IN.equals(action)){
+            } else if (Bg5Profile.ACTION_STRIP_IN.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "strip in";
                 myHandler.sendMessage(msg);
-            } else if(Bg5Profile.ACTION_GET_BLOOD.equals(action)){
+            } else if (Bg5Profile.ACTION_GET_BLOOD.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "get blood";
                 myHandler.sendMessage(msg);
-            } else if(Bg5Profile.ACTION_STRIP_OUT.equals(action)){
+            } else if (Bg5Profile.ACTION_STRIP_OUT.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "strip out";
                 myHandler.sendMessage(msg);
-            } else if(Bg5Profile.ACTION_START_MEASURE.equals(action)){
+            } else if (Bg5Profile.ACTION_START_MEASURE.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "start measure";
                 myHandler.sendMessage(msg);
-            } else if(Bg5Profile.ACTION_START_MODE.equals(action)){
-                try {
-                    JSONObject info = new JSONObject(message);
-                    Message msg = new Message();
-                    msg.what = HANDLER_MESSAGE;
-                    msg.obj = "start mode " + info.getString(Bg5Profile.START_MODE_EXTRA);
-                    myHandler.sendMessage(msg);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else if(Bg5Profile.ACTION_DELETE_HISTORICAL_DATA.equals(action)){
+            } else if (Bg5Profile.ACTION_DELETE_HISTORICAL_DATA.equals(action)) {
                 Log.e(TAG, "delete historical data successfully!");
 
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "delete historical data successfully!";
                 myHandler.sendMessage(msg);
-                bg5lControl.setBottleMessage(QRCode);
-            } else if(Bg5Profile.ACTION_SET_BOTTLE_ID_SUCCESS.equals(action)){
+//                bg5lControl.setBottleMessage(QRCode);
+            } else if (Bg5Profile.ACTION_SET_BOTTLE_ID_SUCCESS.equals(action)) {
                 Log.e(TAG, "set bottle id successfully!");
 
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "set bottle id successfully!";
                 myHandler.sendMessage(msg);
-            } else if(Bg5Profile.ACTION_SET_BOTTLE_MESSAGE_SUCCESS.equals(action)){
+            } else if (Bg5Profile.ACTION_SET_BOTTLE_MESSAGE_SUCCESS.equals(action)) {
                 Log.e(TAG, "set bottle message successfully!");
 
                 Message msg = new Message();
@@ -376,7 +359,7 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case HANDLER_MESSAGE:
-                    tv_return.setText((String)msg.obj);
+                    tv_return.setText((String) msg.obj);
                     break;
             }
             super.handleMessage(msg);
@@ -385,11 +368,11 @@ public class BG5l extends AppCompatActivity implements View.OnClickListener{
 
 
     private void closeTimer() {
-        if(mTimer != null) {
+        if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
         }
-        if(mTimerTask != null) {
+        if (mTimerTask != null) {
             mTimerTask.cancel();
             mTimerTask = null;
         }

@@ -1,10 +1,13 @@
 # iHealth Device Developer Documentation
 
-This document describes how to use the iHealth Device SDK to accomplish the major operation: Connection Device, Online Measurement, Offline Measurement and iHealth Device Management.
 
+This document describes how to use the iHealth Device SDK to accomplish the major operation: Connection Device, Online Measurement, Offline Measurement and iHealth Device Management. 
+ 
+
+    
 ### Latest version
 
-2.3.1
+2.3.2
 
 ### Support iHealth Device for Android
 
@@ -58,19 +61,25 @@ Specific configuration as shown below:
 
 ### How to apply for SDK permissions
 
-[Click this link](https://github.com/iHealthDeviceLabs/iHealthDeviceLabs-Android/blob/master/doc/Developer_Registration_Application_Instruction.md)
+[Click this link](https://github.com/iHealthDeviceLabs/iHealthDeviceLabs-Android/blob/master/doc/Developer_Registration_Application_Instruction.md)   
+
+Contact for more information:  
+<enterprise@ihealthlabs.com>    
+<developer@ihealthlabs.com>(US)  
+<louie@ihealthlabs.com>(Europe)  
 
 ### How to use the iHealth SDK
 
 ##### 1. Initialization iHealth SDK.
 
-```java
+``` 
 iHealthDevicesManager.getInstance().init(MainActivity.this);
+
 ```
 
 ##### 2. Register callback, and get a callback ID.
 
-```java
+```
 /*
 * Register callback to the manager. This method will return a callback Id.
 */
@@ -79,28 +88,25 @@ int callbackId = iHealthDevicesManager.getInstance().registerClientCallback(iHea
 
 ##### 3. Add callback filter.
 
-```java
-iHealthDevicesManager.getInstance().addCallbackFilterForAddress(clientCallbackId, ...);
 ```
-
-```java
-	iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, ...);
+iHealthDevicesManager.getInstance().addCallbackFilterForAddress(clientCallbackId, ...);	iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, ...);
 ```
 
 ##### 4. Verify iHealth device user permission.
 
-```java
+```
 iHealthDevicesManager.getInstance().sdkUserInAuthor(MainActivity.this, userName, clientId, clientSecret, callbackId);
+If verify success, all the api avaliable, else 15 trial days you will get.
 ```
 
 ##### 5. Discovery a iHealth device.
 
-```java
+```
 int type = iHealthDevicesManager.DISCOVERY_BP5
 iHealthDevicesManager.getInstance().startDiscovery(type);
 ```
 
-```java
+```
 private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {  
 	@Override
     public void onScanDevice(String mac, String deviceType) {
@@ -110,11 +116,11 @@ private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallba
 
 ##### 6. Connection a iHealth device.
 
-```java
+```
 iHealthDevicesManager.getInstance().connectDevice(userName, mac, type);
 ```
 
-```java
+```
 private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallback() {
 	@Override
 	    public void onDeviceConnectionStateChange(String mac, String deviceType, int status) {
@@ -123,8 +129,8 @@ private iHealthDevicesCallback iHealthDevicesCallback = new iHealthDevicesCallba
 ```
 
 ##### 7. Get iHealth device controller.
+```
 
-```java
 /*
 * Get Am3 device controller
 */
@@ -218,11 +224,10 @@ Po3Control po3Control = iHealthDevicesManager.getInstance().getPo3Control(mac);
 /*
 * Get FDTH device controller
 */
-BtmControl btmControl = iHealthDevicesManager.getInstance().getBtmControl(mac);
-
+BtmControl btmControl = iHealthDevicesManager.getInstance().getBtmControl(mac);   
 ```
 
-####
+
 
 ## API Guide
 

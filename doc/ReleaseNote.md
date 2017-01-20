@@ -138,3 +138,48 @@ Description:
 	9. Fix bugs
 Release Date: 2016-10-21
 ```
+
+### 15. V2.3.2
+```
+Description: 
+	1. Support cache function for Api, you can call Api one by one without waiting the callback. 
+	2. Optimize the connection for BG1
+	3. Support GDH strip (OneCode) for BG1 BG5
+	4. Support HS5 for Android 7.0
+	5. Fix bugs
+	6. New api to replace the old one
+		
+		/* iHealthDevicesManager */
+		Deprecated:
+			public boolean connectDevice(String userName, final String mac)
+		New: 
+			public boolean connectDevice(String userName, final String mac, final String type)
+		
+		Deprecated:
+			public IDPS getIdps(String mac)
+		New: 
+			public String getDevicesIDPS(String mac)
+			
+		/* Bg5Control */
+		Deprecated:
+			public void setBottleMessage(final String QRCode)
+			public void setBottleMessage(final String QRCode, final int stripNum, final String overDate)
+		New: 
+			public void setBottleMessageWithInfo(final int stripType, final int measureType, final String QRCode, final int stripNum, final String overDate)
+			
+			
+		/* Bg1Control */
+		Deprecated:
+			public void sendCode(final String QRCode)
+		New: 
+			public void sendCode(final String QRCode, int stripType, int measureType) 
+			
+		/* Bp7Control */
+		Deprecated:
+			public void getAngle()
+		New: 
+			public void conformAngle()
+				
+			
+Release Date: 2017-1-21
+```

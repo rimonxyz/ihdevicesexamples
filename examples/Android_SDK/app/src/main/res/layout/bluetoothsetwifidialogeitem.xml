@@ -3,11 +3,11 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" >
+        android:layout_height="50dp">
 
         <TextView
             android:id="@+id/textView1"
@@ -29,14 +29,13 @@
             android:layout_toRightOf="@+id/textView1"
             android:ems="10"
             android:textColor="#CCCCCC"
-            android:textSize="16dp" >
-        </TextView>
+            android:textSize="16dp"></TextView>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/text11111"
@@ -65,7 +64,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" 
+        android:layout_height="50dp"
         android:layout_marginRight="50dp">
 
         <TextView
@@ -89,6 +88,33 @@
             android:inputType="textPassword"
             android:textColor="#000000"
             android:textSize="16dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginRight="50dp">
+
+        <TextView
+            android:id="@id/textpsw11"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:text="@string/bluetooth_devicelist_dialog_deviceKey"
+            android:textColor="#CCCCCC"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/btSetWiFi_et_device_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/textpsw11"
+            android:text="device_key"
+            android:textColor="#000000"
+            android:textSize="16sp" />
     </RelativeLayout>
 
 </LinearLayout>

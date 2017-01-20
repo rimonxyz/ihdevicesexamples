@@ -56,9 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * identification of the SDK, will be issued after the iHealth SDK registration. please contact
      * louie@ihealthlabs.com for registration.
      */
-    String userName = "anudroid.apk06@gmail.com";
-    String clientId = "708bde5b65884f8d9e579e33e66e8e80";
-    String clientSecret = "38ff62374a0d4aacadaf0e4fb4ed1931";
+    String userName = "";
+    String clientId = "";
+    String clientSecret = "";
+
+
     private ListView listview_scan;
     private ListView listview_connected;
     private SimpleAdapter sa_scan;
@@ -175,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_GotoBG1).setOnClickListener(this);
         findViewById(R.id.btn_GotoABI).setOnClickListener(this);
         findViewById(R.id.btn_GotoHS6).setOnClickListener(this);
+        findViewById(R.id.btn_GotoBPM1).setOnClickListener(this);
 //        findViewById(R.id.btn_GotoTest).setOnClickListener(this);
 
         tv_discovery = (TextView) findViewById(R.id.tv_discovery);
@@ -226,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String type = hm.get("type");
                 String mac = hm.get("mac");
                 Log.i(TAG, "mac = " + mac);
-                boolean req = iHealthDevicesManager.getInstance().connectDevice(userName, mac);
+                boolean req = iHealthDevicesManager.getInstance().connectDevice(userName, mac, type);
                 if (!req) {
                     Toast.makeText(MainActivity.this, "Haven’t permission to connect this device or the mac is not valid", Toast.LENGTH_LONG).show();
                 }
@@ -301,12 +305,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          */
         iHealthDevicesManager.getInstance().destroy();
     }
+
     private static class DeviceStruct {
         String name;
         long type;
         boolean isSelected;
     }
+
     private static ArrayList<DeviceStruct> deviceStructList = new ArrayList<>();
+
     static {
         Field[] fields = iHealthDevicesManager.class.getFields();
         for (Field field : fields) {
@@ -324,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
     private class SelectDeviceAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -374,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tv_discovery.setText("discovering...");
         }
     }
+
     @Override
     public void onClick(View arg0) {
         switch (arg0.getId()) {
@@ -430,13 +439,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intentHS6.setClass(MainActivity.this, HS6.class);
                 startActivity(intentHS6);
                 break;
-
+            case R.id.btn_GotoBPM1:
+                Intent intentBPM1 = new Intent(this, BPM1.class);
+                startActivity(intentBPM1);
+                break;
 //            case R.id.btn_GotoTest:
 //                Intent intentTest = new Intent();
 //                intentTest.setClass(MainActivity.this, TestActivity.class);
 //                startActivity(intentTest);
 //                break;
-
             default:
                 break;
         }
@@ -474,15 +485,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent();
                 intent.putExtra("mac", mac);
                 if (iHealthDevicesManager.TYPE_AM3.equals(type)) {
-                    intent.setClass(MainActivity.this, AM3.class);
+                    intent.setClass(MainActivity.this, AMActivity.class);
+                    intent.putExtra("am_type", 0);
                     startActivity(intent);
 
                 } else if (iHealthDevicesManager.TYPE_AM3S.equals(type)) {
-                    intent.setClass(MainActivity.this, AM3S.class);
+                    intent.setClass(MainActivity.this, AMActivity.class);
+                    intent.putExtra("am_type", 1);
                     startActivity(intent);
 
                 } else if (iHealthDevicesManager.TYPE_AM4.equals(type)) {
-                    intent.setClass(MainActivity.this, AM4.class);
+                    intent.setClass(MainActivity.this, AMActivity.class);
+                    intent.putExtra("am_type", 2);
                     startActivity(intent);
 
                 } else if (iHealthDevicesManager.TYPE_BG5.equals(type)) {
@@ -534,8 +548,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
 
                 } else if (iHealthDevicesManager.TYPE_HS5.equals(type)) {
-//                    intent.setClass(MainActivity.this, HS5wifi.class);
-//                    startActivity(intent);
+                    intent.setClass(MainActivity.this, HS5wifi.class);
+                    startActivity(intent);
 
                 } else if (iHealthDevicesManager.TYPE_HS5_BT.equals(type)) {
                     intent.setClass(MainActivity.this, HS5BT.class);
@@ -573,10 +587,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StringBuilder tempRequest = new StringBuilder();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             tempRequest.append(Manifest.permission.WRITE_EXTERNAL_STORAGE + ",");
-        }
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            tempRequest.append(Manifest.permission.READ_PHONE_STATE + ",");
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             tempRequest.append(Manifest.permission.RECORD_AUDIO + ",");

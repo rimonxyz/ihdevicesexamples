@@ -128,7 +128,7 @@ public class BP550BT extends AppCompatActivity implements View.OnClickListener{
                             String date          = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
                             String hightPressure = obj.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
                             String lowPressure   = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
-                            String pulseWave     = obj.getString(BpProfile.PULSEWAVE_BP);
+                            String pulseWave     = obj.getString(BpProfile.PULSE_BP);
                             String ahr           = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
                             String hsd           = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
                             str = "date:" + date
@@ -167,8 +167,10 @@ public class BP550BT extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View arg0) {
         switch (arg0.getId()) {
             case R.id.btn_getbattery:
-                if(bp550BTControl != null)
+                if(bp550BTControl != null){
                     bp550BTControl.getBattery();
+                }
+
                 else
                     Toast.makeText(this, "bp550BTControl == null", Toast.LENGTH_LONG).show();
                 break;

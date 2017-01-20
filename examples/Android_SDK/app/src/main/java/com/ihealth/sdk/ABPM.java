@@ -24,6 +24,7 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ABPM";
     private ABPMControl abpmControl;
     private TextView tv_return;
+    private int clientCallbackId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +47,18 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
         findViewById(R.id.btn_disconnect).setOnClickListener(this);
         tv_return = (TextView) findViewById(R.id.tv_return);
 
-        int clientCallbackId = iHealthDevicesManager.getInstance().registerClientCallback(miHealthDevicesCallback);
+        clientCallbackId = iHealthDevicesManager.getInstance().registerClientCallback(miHealthDevicesCallback);
         /* Limited wants to receive notification specified device */
         iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, iHealthDevicesManager.TYPE_KD926);
         /* Get kd926 controller */
         abpmControl = iHealthDevicesManager.getInstance().getABPMControl(deviceMac);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        iHealthDevicesManager.getInstance().unRegisterClientCallback(clientCallbackId);
+    }
     private iHealthDevicesCallback miHealthDevicesCallback = new iHealthDevicesCallback() {
 
         @Override
@@ -74,8 +80,10 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
                                    String action, String message) {
             Log.i(TAG, "mac: " + mac);
             Log.i(TAG, "deviceType: " + deviceType);
+            Log.i(TAG, "action: " + action);
+            Log.i(TAG, "message: " + message);
             switch (action) {
-                case BpProfile.ACTION_BATTERY_BP:
+                case BpProfile.ACTION_BATTERY_ABPM:
                     try {
                         JSONObject info = new JSONObject(message);
                         String battery = info.getString(BpProfile.BATTERY_BP);
@@ -89,34 +97,34 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     break;
-                case BpProfile.ACTION_FUNCTION_INFORMATION_BP:
+                case BpProfile.ACTION_FUNCTION_INFORMATION_ABPM:
                     Message functionMsg = new Message();
                     functionMsg.what = HANDLER_MESSAGE;
                     functionMsg.obj = "function information: " + message;
                     myHandler.sendMessage(functionMsg);
                     break;
-                case BpProfile.ACTION_GET_CYCLE_MEASURE:
+                case BpProfile.ACTION_GET_CYCLE_MEASURE_ABPM:
                     Message cycleMsg = new Message();
                     cycleMsg.what = HANDLER_MESSAGE;
                     cycleMsg.obj = "cycle measure: " + message;
                     myHandler.sendMessage(cycleMsg);
                     break;
-                case BpProfile.ACTION_ALARM_SETTING_BP:
+                case BpProfile.ACTION_GET_ALARM_SETTING_ABPM:
                     Message alarmMsg = new Message();
                     alarmMsg.what = HANDLER_MESSAGE;
                     alarmMsg.obj = "alarm setting: " + message;
                     myHandler.sendMessage(alarmMsg);
                     break;
-                case BpProfile.ACTION_ALARM_TYPE_BP:
+                case BpProfile.ACTION_ALARM_TYPE_ABPM:
                     Message typeMsg = new Message();
                     typeMsg.what = HANDLER_MESSAGE;
                     typeMsg.obj = "alarm type: " + message;
                     myHandler.sendMessage(typeMsg);
                     break;
-                case BpProfile.ACTION_HISTORICAL_NUM_BP:
+                case BpProfile.ACTION_HISTORICAL_NUM_ABPM:
                     try {
                         JSONObject info = new JSONObject(message);
-                        String num = info.getString(BpProfile.HISTORICAL_NUM_BP);
+                        String num = info.getString(BpProfile.HISTORICAL_NUM_ABPM);
                         Message msg = new Message();
                         msg.what = HANDLER_MESSAGE;
                         msg.obj = "num: " + num;
@@ -125,35 +133,30 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     break;
-                case BpProfile.ACTION_HISTORICAL_DATA_BP:
-                    String str = "";
-                    try {
-                        JSONObject info = new JSONObject(message);
-                        if (info.has(BpProfile.HISTORICAL_DATA_BP)) {
-                            JSONArray array = info.getJSONArray(BpProfile.HISTORICAL_DATA_BP);
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obj = array.getJSONObject(i);
-                                String date = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
-                                String hightPressure = obj.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
-                                String lowPressure = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
-                                String pulseWave = obj.getString(BpProfile.PULSEWAVE_BP);
-                                String ahr = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
-                                String hsd = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
-                                str = "date:" + date
-                                        + "hightPressure:" + hightPressure + "\n"
-                                        + "lowPressure:" + lowPressure + "\n"
-                                        + "pulseWave" + pulseWave + "\n"
-                                        + "ahr:" + ahr + "\n"
-                                        + "hsd:" + hsd + "\n";
-                            }
-                        }
-                        Message msg = new Message();
-                        msg.what = HANDLER_MESSAGE;
-                        msg.obj = str;
-                        myHandler.sendMessage(msg);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                case BpProfile.ACTION_HISTORICAL_DATA_ABPM:
+//                        JSONObject info = new JSONObject(message);
+//                        if (info.has(BpProfile.HISTORICAL_DATA_BP)) {
+//                            JSONArray array = info.getJSONArray(BpProfile.HISTORICAL_DATA_BP);
+//                            for (int i = 0; i < array.length(); i++) {
+//                                JSONObject obj = array.getJSONObject(i);
+//                                String date = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
+//                                String hightPressure = obj.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
+//                                String lowPressure = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
+//                                String pulseWave = obj.getString(BpProfile.PULSE_BP);
+//                                String ahr = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
+//                                String hsd = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
+//                                str = "date:" + date
+//                                        + "hightPressure:" + hightPressure + "\n"
+//                                        + "lowPressure:" + lowPressure + "\n"
+//                                        + "pulseWave" + pulseWave + "\n"
+//                                        + "ahr:" + ahr + "\n"
+//                                        + "hsd:" + hsd + "\n";
+//                            }
+//                        }
+                    Message msg = new Message();
+                    msg.what = HANDLER_MESSAGE;
+                    msg.obj = message;
+                    myHandler.sendMessage(msg);
                     break;
                 case BpProfile.ACTION_ERROR_BP:
                     try {
@@ -178,7 +181,6 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_get_battery:
                 if (abpmControl != null) {
-
                     abpmControl.getBattery();
                 } else {
                     Toast.makeText(this, "abpmControl == null", Toast.LENGTH_SHORT).show();
@@ -201,7 +203,12 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.btn_set_measure_time:
                 if (abpmControl != null) {
-                    abpmControl.setMeasureTime(1, true, new int[]{7, 0, 5, 3});
+                    int[][] measureTimeArray = new int[2][4];
+                    measureTimeArray[0] = new int[]{7, 0, 5, 3};
+                    measureTimeArray[1] = new int[]{22, 0, 5, 3};
+//                    measureTimeArray[2] = new int[]{16, 45, 5, 3};
+//                    measureTimeArray[3] = new int[]{17, 0, 5, 3};
+                    abpmControl.setMeasureTime(12, true, measureTimeArray);
                 } else {
                     Toast.makeText(this, "abpmControl == null", Toast.LENGTH_SHORT).show();
                 }
@@ -215,7 +222,7 @@ public class ABPM extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.btn_set_alarm:
                 if (abpmControl != null) {
-                    abpmControl.setAlarm(new int[]{1, 2, 10, 20});
+                    abpmControl.setAlarm(new int[]{1, 3, 100, 50});
                 } else {
                     Toast.makeText(this, "abpmControl == null", Toast.LENGTH_SHORT).show();
                 }

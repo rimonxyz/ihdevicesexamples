@@ -18,9 +18,6 @@ import com.ihealth.communication.control.Bg5Profile;
 import com.ihealth.communication.manager.iHealthDevicesCallback;
 import com.ihealth.communication.manager.iHealthDevicesManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,8 +28,7 @@ public class BG5 extends AppCompatActivity implements View.OnClickListener {
     private String deviceMac;
     private int clientCallbackId;
     private TextView tv_return;
-    //    public String QRCode = "02323C641E3114322D0800A064646464646464646464FA012261000E1CCC";
-    public String QRCode = "02ABCDE67C284BA29ACDFEE6E60A2FE43EDF0C";
+    public String QRCode = "02323C641E3114322D0800A064646464646464646464FA012261000E1CCC";
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -97,6 +93,7 @@ public class BG5 extends AppCompatActivity implements View.OnClickListener {
             case R.id.btn_syncTime:
                 if (bg5Control != null)
                     bg5Control.setTime();
+
                 else
                     Toast.makeText(BG5.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
@@ -139,17 +136,16 @@ public class BG5 extends AppCompatActivity implements View.OnClickListener {
             case R.id.btn_sendQRCode:
                 if (bg5Control != null) {
                     String QRInfo = bg5Control.getBottleInfoFromQR(QRCode);
-                    Log.e(TAG, "QRinfo =" + QRInfo);
-
-                    bg5Control.setBottleMessage(QRCode);
+                    Log.i(TAG, "QRinfo =" + QRInfo);
+                    bg5Control.setBottleMessageWithInfo(1, 1, QRCode, 20, "2017-02-14");
                 } else
                     Toast.makeText(BG5.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.btn_setBottleMessage:
-                if (bg5Control != null)
-                    bg5Control.setBottleMessage(QRCode, 20, "2016-2-14");
-                else
+                if (bg5Control != null) {
+                    bg5Control.setBottleMessageWithInfo(2, 1, "", 20, "2017-02-14");
+                } else
                     Toast.makeText(BG5.this, "bg5Control == null", Toast.LENGTH_LONG).show();
 
                 break;

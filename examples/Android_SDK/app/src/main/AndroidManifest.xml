@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -12,6 +11,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +22,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,20 +35,13 @@
             android:label="@string/title_activity_abi"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AM3"
-            android:label="@string/title_activity_am3"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".AM3S"
-            android:label="@string/title_activity_am3_s"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".AM4"
-            android:label="@string/title_activity_am4"
+            android:name=".AMActivity"
+            android:label="AM"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BG1"
             android:label="@string/title_activity_bg1"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BG5"
@@ -130,6 +124,10 @@
             android:name=".ContinuaBP"
             android:label="ContinuaBP"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PressureTestActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".BPM1"></activity>
     </application>
 
 </manifest>

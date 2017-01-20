@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class BP3L extends AppCompatActivity implements View.OnClickListener{
+public class BP3L extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "BP3L";
     private Bp3lControl bp3lControl;
@@ -52,10 +53,10 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
         findViewById(R.id.btn_startMeasure).setOnClickListener(this);
         findViewById(R.id.btn_stopMeasure).setOnClickListener(this);
         findViewById(R.id.btn_disconnect).setOnClickListener(this);
-        tv_return = (TextView)findViewById(R.id.tv_return);
+        tv_return = (TextView) findViewById(R.id.tv_return);
 
         clientCallbackId = iHealthDevicesManager.getInstance().registerClientCallback(miHealthDevicesCallback);
-		/* Limited wants to receive notification specified device */
+        /* Limited wants to receive notification specified device */
         iHealthDevicesManager.getInstance().addCallbackFilterForDeviceType(clientCallbackId, iHealthDevicesManager.TYPE_BP3L);
 		/* Get bp3 controller */
         bp3lControl = iHealthDevicesManager.getInstance().getBp3lControl(deviceMac);
@@ -67,6 +68,7 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
         iHealthDevicesManager.getInstance().unRegisterClientCallback(clientCallbackId);
     }
 
+    private int i = 0;
     private iHealthDevicesCallback miHealthDevicesCallback = new iHealthDevicesCallback() {
 
         @Override
@@ -86,15 +88,16 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
         @Override
         public void onDeviceNotify(String mac, String deviceType,
                                    String action, String message) {
+            i++;
             Log.i(TAG, "mac: " + mac);
             Log.i(TAG, "deviceType: " + deviceType);
             Log.i(TAG, "action: " + action);
             Log.i(TAG, "message: " + message);
 
-            if(BpProfile.ACTION_BATTERY_BP.equals(action)){
+            if (BpProfile.ACTION_BATTERY_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String battery =info.getString(BpProfile.BATTERY_BP);
+                    String battery = info.getString(BpProfile.BATTERY_BP);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "battery: " + battery;
@@ -104,16 +107,16 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                 }
 
 
-            }else if(BpProfile.ACTION_DISENABLE_OFFLINE_BP.equals(action)){
+            } else if (BpProfile.ACTION_DISENABLE_OFFLINE_BP.equals(action)) {
                 Log.i(TAG, "disable operation is success");
 
-            }else if(BpProfile.ACTION_ENABLE_OFFLINE_BP.equals(action)){
+            } else if (BpProfile.ACTION_ENABLE_OFFLINE_BP.equals(action)) {
                 Log.i(TAG, "enable operation is success");
 
-            }else if(BpProfile.ACTION_ERROR_BP.equals(action)){
+            } else if (BpProfile.ACTION_ERROR_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String num =info.getString(BpProfile.ERROR_NUM_BP);
+                    String num = info.getString(BpProfile.ERROR_NUM_BP);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "error num: " + num;
@@ -122,7 +125,7 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_HISTORICAL_DATA_BP.equals(action)){
+            } else if (BpProfile.ACTION_HISTORICAL_DATA_BP.equals(action)) {
                 String str = "";
                 try {
                     JSONObject info = new JSONObject(message);
@@ -130,12 +133,12 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                         JSONArray array = info.getJSONArray(BpProfile.HISTORICAL_DATA_BP);
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject obj = array.getJSONObject(i);
-                            String date          = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
+                            String date = obj.getString(BpProfile.MEASUREMENT_DATE_BP);
                             String hightPressure = obj.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
-                            String lowPressure   = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
-                            String pulseWave     = obj.getString(BpProfile.PULSEWAVE_BP);
-                            String ahr           = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
-                            String hsd           = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
+                            String lowPressure = obj.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
+                            String pulseWave = obj.getString(BpProfile.PULSE_BP);
+                            String ahr = obj.getString(BpProfile.MEASUREMENT_AHR_BP);
+                            String hsd = obj.getString(BpProfile.MEASUREMENT_HSD_BP);
                             str = "date:" + date
                                     + "hightPressure:" + hightPressure + "\n"
                                     + "lowPressure:" + lowPressure + "\n"
@@ -146,13 +149,13 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     }
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
-                    msg.obj =  str;
+                    msg.obj = str;
                     myHandler.sendMessage(msg);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_HISTORICAL_NUM_BP.equals(action)){
+            } else if (BpProfile.ACTION_HISTORICAL_NUM_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
                     String num = info.getString(BpProfile.HISTORICAL_NUM_BP);
@@ -164,10 +167,10 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_IS_ENABLE_OFFLINE.equals(action)){
+            } else if (BpProfile.ACTION_IS_ENABLE_OFFLINE.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String isEnableoffline =info.getString(BpProfile.IS_ENABLE_OFFLINE);
+                    String isEnableoffline = info.getString(BpProfile.IS_ENABLE_OFFLINE);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "isEnableoffline: " + isEnableoffline;
@@ -176,10 +179,10 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_ONLINE_PRESSURE_BP.equals(action)){
+            } else if (BpProfile.ACTION_ONLINE_PRESSURE_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String pressure =info.getString(BpProfile.BLOOD_PRESSURE_BP);
+                    String pressure = info.getString(BpProfile.BLOOD_PRESSURE_BP);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "pressure: " + pressure;
@@ -188,10 +191,10 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_ONLINE_PULSEWAVE_BP.equals(action)){
+            } else if (BpProfile.ACTION_ONLINE_PULSEWAVE_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String pressure =info.getString(BpProfile.BLOOD_PRESSURE_BP);
+                    String pressure = info.getString(BpProfile.BLOOD_PRESSURE_BP);
                     String wave = info.getString(BpProfile.PULSEWAVE_BP);
                     String heartbeat = info.getString(BpProfile.FLAG_HEARTBEAT_BP);
                     Message msg = new Message();
@@ -204,13 +207,13 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_ONLINE_RESULT_BP.equals(action)){
+            } else if (BpProfile.ACTION_ONLINE_RESULT_BP.equals(action)) {
                 try {
                     JSONObject info = new JSONObject(message);
-                    String highPressure =info.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
-                    String lowPressure =info.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
-                    String ahr =info.getString(BpProfile.MEASUREMENT_AHR_BP);
-                    String pulse =info.getString(BpProfile.PULSE_BP);
+                    String highPressure = info.getString(BpProfile.HIGH_BLOOD_PRESSURE_BP);
+                    String lowPressure = info.getString(BpProfile.LOW_BLOOD_PRESSURE_BP);
+                    String ahr = info.getString(BpProfile.MEASUREMENT_AHR_BP);
+                    String pulse = info.getString(BpProfile.PULSE_BP);
                     Message msg = new Message();
                     msg.what = HANDLER_MESSAGE;
                     msg.obj = "highPressure: " + highPressure
@@ -222,13 +225,13 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
                     e.printStackTrace();
                 }
 
-            }else if(BpProfile.ACTION_ZOREING_BP.equals(action)){
+            } else if (BpProfile.ACTION_ZOREING_BP.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "zoreing";
                 myHandler.sendMessage(msg);
 
-            }else if(BpProfile.ACTION_ZOREOVER_BP.equals(action)){
+            } else if (BpProfile.ACTION_ZOREOVER_BP.equals(action)) {
                 Message msg = new Message();
                 msg.what = HANDLER_MESSAGE;
                 msg.obj = "zoreover";
@@ -242,28 +245,29 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View arg0) {
         switch (arg0.getId()) {
             case R.id.btn_getbattery:
-                if(bp3lControl != null)
+                if (bp3lControl != null) {
                     bp3lControl.getBattery();
-                else
+                    bp3lControl.startMeasure();
+                } else
                     Toast.makeText(BP3L.this, "bp3lControl == null", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.btn_startMeasure:
-                if(bp3lControl != null)
+                if (bp3lControl != null)
                     bp3lControl.startMeasure();
                 else
                     Toast.makeText(BP3L.this, "bp3lControl == null", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.btn_stopMeasure:
-                if(bp3lControl != null)
+                if (bp3lControl != null) {
                     bp3lControl.interruptMeasure();
-                else
+                } else
                     Toast.makeText(BP3L.this, "bp3lControl == null", Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.btn_disconnect:
-                if(bp3lControl != null)
+                if (bp3lControl != null)
                     bp3lControl.disconnect();
                 else
                     Toast.makeText(BP3L.this, "bp3lControl == null", Toast.LENGTH_LONG).show();
@@ -278,7 +282,7 @@ public class BP3L extends AppCompatActivity implements View.OnClickListener{
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case HANDLER_MESSAGE:
-                    tv_return.setText((String)msg.obj);
+                    tv_return.setText((String) msg.obj);
                     break;
             }
             super.handleMessage(msg);

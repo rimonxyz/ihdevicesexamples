@@ -175,7 +175,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     if(loop_Num < EXCEPT_NUM){
                         iHealthDevicesManager.getInstance().stopDiscovery();
                         SystemClock.sleep(300);
-                        iHealthDevicesManager.getInstance().connectDevice(null, mAddress);
+                        iHealthDevicesManager.getInstance().connectDevice(null, mAddress, "");
                     }
                     break;
                 case DISCONNECT_DEVICE:
