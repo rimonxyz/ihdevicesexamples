@@ -96,7 +96,7 @@ iHealthDevicesManager.getInstance().addCallbackFilterForAddress(clientCallbackId
 
 ```
 iHealthDevicesManager.getInstance().sdkUserInAuthor(MainActivity.this, userName, clientId, clientSecret, callbackId);
-If verify success, all the api avaliable, else 15 trial days you will get.
+If verify success, all the api avaliable, else 10 trial days you will get.
 ```
 
 ##### 5. Discovery a iHealth device.
