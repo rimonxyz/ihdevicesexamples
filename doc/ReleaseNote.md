@@ -83,8 +83,7 @@ Release Date: 2016-5-12
 ### 10. V2.2.6
 ```
 Description: 
-	1.add device KD926 and KD723
-	2.solve some bug
+	1. Fix BP3L measure bug
 Release Date: 2016-5-13
 ```
 
