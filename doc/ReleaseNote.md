@@ -19,14 +19,14 @@ Release Date: 2016-1-11
 
 ### 3. V2.1.1
 ```
-Description: Support BP7S KD550 KD926
+Description: Fix bug
 Release Date: 2016-1-11
 ```
 
 
 ### 4. V2.2.0
 ```
-Description: Support BP7S KD550 KD926
+Description: Fix bug
 Release Date: 2016-1-20
 ```
 
@@ -182,4 +182,18 @@ Description:
 				
 			
 Release Date: 2017-1-21
+```
+
+### 15. V2.4.0
+```
+Description: 
+	1. Support new iHealth device: BP5S 
+	2. Change the format of version for software and hardware, et. from 101 to 1.0.1
+	3. Fix bugs
+		3.1 BP7 measure failed, then can not measure again.
+		3.2 
+
+				
+			
+Release Date: 
 ```
