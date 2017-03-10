@@ -184,16 +184,3 @@ Description:
 Release Date: 2017-1-21
 ```
 
-### 15. V2.4.0
-```
-Description: 
-	1. Support new iHealth device: BP5S 
-	2. Change the format of version for software and hardware, et. from 101 to 1.0.1
-	3. Fix bugs
-		3.1 BP7 measure failed, then can not measure again.
-		3.2 
-
-				
-			
-Release Date: 
-```
